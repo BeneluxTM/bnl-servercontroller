@@ -29,4 +29,5 @@ export async function register() {
   for (const server of servers) {
     getGbxClientManager(server.id);
   }
+  await (await import("./lib/tournament/bootstrap")).start(servers);
 }
