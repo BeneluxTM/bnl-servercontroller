@@ -19,6 +19,7 @@ A Dockerized management panel for dedicated Trackmania servers. Works both stand
     - [Live Match](#live-match)
     - [Records and Matches](#records-and-matches)
     - [Plugin Management](#plugin-management)
+    - [Plugin UI Customization](#plugin-ui-customization)
     - [Trackmania Exchange](#trackmania-exchange)
     - [Files Management](#files-management)
     - [User Management](#user-management)
@@ -89,6 +90,30 @@ Manage the server plugins and chat settings of the server.
 
 ![Plugins Page](https://i.imgur.com/5LAxOpO.png "Plugins Page")
 ![Chat Message Editor Page](https://i.imgur.com/NpvWT3K.png "Chat Message Editor Page")
+
+#### Plugin UI Customization
+
+Customize the in-game UI of every plugin from the **UI** button next to the plugin on the Plugins tab. Changes are sent to the players as soon as they are saved, no reload needed.
+
+- **Layout**: position, scale, width, number of visible rows and hiding the widget while driving.
+- **Spacing**: header height, row height and the gap between rows.
+- **Colors**: background and text colors as 3 or 6 digit hex colors (e.g. `222` or `1A2B3C`), and the opacity of the backgrounds.
+- **Fonts**: the font of each text, e.g. `GameFontSemiBold`, `Oswald` or `RobotoCondensed`.
+- **Text sizes**: the size of each text.
+- **Texts**: widget titles and the pick and ban texts, for example to translate them.
+
+The preview shows an approximation of the widget on the screen, drag it to change its position. Positions use manialink coordinates: `x` goes from `-160` (left) to `160` (right) and `y` from `90` (top) to `-90` (bottom), measured to the top left corner of the widget.
+
+Only the values that differ from the defaults are stored, so **Reset all** returns the plugin to its original look. With **Export** and **Import** you can copy a UI to another server, or apply the colors and fonts of one plugin to another plugin that uses the same settings.
+
+<details>
+<summary>Making the UI of a plugin customizable</summary>
+
+1. Describe the customizable values with their defaults in a `ui.ts` file next to the plugin (see `src/plugins/ta-leaderboard/ui.ts`) and add it to `src/plugins/ui.ts`.
+2. Use the values in the templates through `ui`, for example `bgcolor="{{ ui.colors.rowBackground }}"`. In ManiaScript use the `real` and `vec3` helpers, e.g. `#Const C_RowStep {{ real ui.spacing.rowHeight }}` and `Label.TextColor = {{ vec3 ui.colors.rowText }};`.
+3. Call `this.applyUi(this.widget)` in the plugin's constructor and `this.applyUi(this.widget, { refresh: true })` in `onUiConfigUpdate()`.
+
+</details>
 
 #### Trackmania Exchange
 
