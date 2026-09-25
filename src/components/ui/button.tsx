@@ -82,15 +82,18 @@ function Button({
       )}
       {...props}
     >
-      {React.Children.map(children, (child, index) =>
-        index === 0 ? (
-          child
-        ) : collapse ? (
-          <span className={textClasses}>{child}</span>
-        ) : (
-          child
-        ),
-      )}
+      {/* Slot can only merge its props into a single element, not an array of children */}
+      {asChild
+        ? children
+        : React.Children.map(children, (child, index) =>
+            index === 0 ? (
+              child
+            ) : collapse ? (
+              <span className={textClasses}>{child}</span>
+            ) : (
+              child
+            ),
+          )}
     </Comp>
   );
 }
