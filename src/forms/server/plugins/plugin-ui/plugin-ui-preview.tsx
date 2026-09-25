@@ -37,16 +37,16 @@ const FONT_STYLES: Record<string, { family: string; weight: number }> = {
 };
 
 const NAMES = [
-  "Marijn",
+  "Racer",
   "Speedy",
-  "Wirtual",
-  "Scrapie",
-  "Mudda",
-  "Bren",
-  "Affi",
-  "Hylis",
-  "Link",
-  "Massa",
+  "Drifter",
+  "Apex",
+  "Turbo",
+  "Glider",
+  "Boost",
+  "Nitro",
+  "Slipstream",
+  "Nosebug",
 ];
 
 function num(ui: Ui, section: PluginUiSection, key: string, fallback: number) {
@@ -352,8 +352,8 @@ function renderRecordsInfo(ui: Ui): Rendered {
   const y = labelY(h);
 
   const content = [
-    ["WR", "Wirtual", "0:41.203"],
-    ["LR", "Marijn", "0:42.588"],
+    ["WR", "Speedy", "0:41.203"],
+    ["LR", "Racer", "0:42.588"],
   ].map(([tag, name, time], i) => (
     <g key={tag} transform={`translate(0 ${i * (h + g)})`}>
       <Rect
@@ -525,7 +525,7 @@ function renderPlayerInfo(ui: Ui): Rendered {
         fill={rowText}
         font={text(ui, "fonts", "name")}
       >
-        Marijn
+        Racer
       </Label>
       <g transform={`translate(0 ${N + S})`}>
         <Header ui={ui} width={W} />
@@ -607,7 +607,7 @@ function renderPickBan(ui: Ui): Rendered {
         fill={headerText}
         font={font("header")}
       >
-        {`Marijn ${text(ui, "texts", "picking")}`}
+        {`Racer ${text(ui, "texts", "picking")}`}
       </Label>
       <Label
         x={115}
@@ -640,7 +640,7 @@ function renderPickBan(ui: Ui): Rendered {
         const banned = i === 1;
         const selected = i === 2;
         const status = picked
-          ? `${text(ui, "texts", "pickedBy")} Marijn`
+          ? `${text(ui, "texts", "pickedBy")} Racer`
           : banned
             ? `${text(ui, "texts", "bannedBy")} Speedy`
             : "";
