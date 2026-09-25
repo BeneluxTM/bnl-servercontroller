@@ -11,18 +11,22 @@ import EcircuitmaniaPluginModal from "@/components/modals/plugins/plugins/ecircu
 import LiveRoundPluginModal from "@/components/modals/plugins/plugins/live-round-plugin-modal";
 import MatchPluginModal from "@/components/modals/plugins/plugins/match-plugin-modal";
 import PlayerInfoPluginModal from "@/components/modals/plugins/plugins/player-info-plugin-modal";
+import PluginUiModal from "@/components/modals/plugins/plugins/plugin-ui-modal";
 import RecordsInfoPluginModal from "@/components/modals/plugins/plugins/records-info-plugin-modal";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Plugins } from "@/lib/prisma/generated";
 import { getErrorMessage } from "@/lib/utils";
+import { getPluginUiDefinition } from "@/plugins/ui";
 import { ECMPluginConfig } from "@/types/plugins/ecm";
 import { MatchPluginConfig } from "@/types/plugins/match";
 import { PlayerInfoPluginConfig } from "@/types/plugins/player-info";
 import { RecordsInfoPluginConfig } from "@/types/plugins/records-info";
+import { PluginUiValues } from "@/types/plugins/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   IconDeviceFloppy,
+  IconPalette,
   IconReload,
   IconSettings,
 } from "@tabler/icons-react";
@@ -44,6 +48,8 @@ export default function PluginsForm({
   const [configModalOpen, setConfigModalOpen] = useState<
     keyof PluginsSchemaType | undefined
   >();
+
+  const [uiModalOpen, setUiModalOpen] = useState<string | undefined>();
 
   const [serverPluginsState, setServerPluginsState] = useState(serverPlugins);
 
@@ -92,6 +98,47 @@ export default function PluginsForm({
     });
   };
 
+  const handleUiUpdate = (name: string, ui?: PluginUiValues) => {
+    const plugin = plugins.find((p) => p.name === name);
+    if (!plugin) return;
+
+    setServerPluginsState((prev) => {
+      if (prev.some((sp) => sp.plugin.name === name)) {
+        return prev.map((sp) =>
+          sp.plugin.name === name ? { ...sp, ui: ui ?? null } : sp,
+        );
+      }
+
+      // The server plugin is created when its UI is saved for the first time
+      return [
+        ...prev,
+        {
+          serverId,
+          pluginId: plugin.id,
+          enabled: false,
+          config: null,
+          ui: ui ?? null,
+          plugin,
+        },
+      ];
+    });
+  };
+
+  const customizeUiButton = (name: string) =>
+    getPluginUiDefinition(name) && (
+      <Button
+        variant={"outline"}
+        type="button"
+        collapse="sm"
+        title="Customize the in-game UI"
+        aria-label="Customize the in-game UI"
+        onClick={() => setUiModalOpen(name)}
+      >
+        <IconPalette />
+        UI
+      </Button>
+    );
+
   const handleReloadPlugins = async () => {
     try {
       const { error } = await reloadServerPlugins(serverId);
@@ -123,7 +170,9 @@ export default function PluginsForm({
               description={
                 plugins.find((p) => p.name === "admin")?.description || ""
               }
-            />
+            >
+              {customizeUiButton("admin")}
+            </FormElement>
 
             <FormElement
               name="ecm"
@@ -142,6 +191,7 @@ export default function PluginsForm({
                 <IconSettings />
                 Configure
               </Button>
+              {customizeUiButton("ecm")}
             </FormElement>
 
             <FormElement
@@ -151,7 +201,9 @@ export default function PluginsForm({
               description={
                 plugins.find((p) => p.name === "map-info")?.description || ""
               }
-            />
+            >
+              {customizeUiButton("map-info")}
+            </FormElement>
 
             <FormElement
               name="records-info"
@@ -171,6 +223,7 @@ export default function PluginsForm({
                 <IconSettings />
                 Configure
               </Button>
+              {customizeUiButton("records-info")}
             </FormElement>
 
             <FormElement
@@ -181,7 +234,9 @@ export default function PluginsForm({
                 plugins.find((p) => p.name === "live-ranking")?.description ||
                 ""
               }
-            />
+            >
+              {customizeUiButton("live-ranking")}
+            </FormElement>
 
             <FormElement
               name="live-round"
@@ -200,6 +255,7 @@ export default function PluginsForm({
                 <IconSettings />
                 Configure
               </Button>
+              {customizeUiButton("live-round")}
             </FormElement>
 
             <FormElement
@@ -210,7 +266,9 @@ export default function PluginsForm({
                 plugins.find((p) => p.name === "ta-leaderboard")?.description ||
                 ""
               }
-            />
+            >
+              {customizeUiButton("ta-leaderboard")}
+            </FormElement>
 
             <FormElement
               name="ta-active-runs"
@@ -220,7 +278,9 @@ export default function PluginsForm({
                 plugins.find((p) => p.name === "ta-active-runs")?.description ||
                 ""
               }
-            />
+            >
+              {customizeUiButton("ta-active-runs")}
+            </FormElement>
 
             <FormElement
               name="player-info"
@@ -239,6 +299,7 @@ export default function PluginsForm({
                 <IconSettings />
                 Configure
               </Button>
+              {customizeUiButton("player-info")}
             </FormElement>
 
             <FormElement
@@ -258,6 +319,7 @@ export default function PluginsForm({
                 <IconSettings />
                 Configure
               </Button>
+              {customizeUiButton("match")}
             </FormElement>
           </div>
 
@@ -283,6 +345,31 @@ export default function PluginsForm({
           </div>
         </form>
       </Form>
+
+      <Modal
+        isOpen={!!uiModalOpen}
+        setIsOpen={() => setUiModalOpen(undefined)}
+        closeOnBackdropClick={false}
+      >
+        <PluginUiModal
+          serverId={serverId}
+          data={
+            uiModalOpen
+              ? {
+                  pluginId:
+                    plugins.find((p) => p.name === uiModalOpen)?.id || "",
+                  pluginName: uiModalOpen,
+                  ui: serverPluginsState.find(
+                    (sp) => sp.plugin.name === uiModalOpen,
+                  )?.ui,
+                }
+              : undefined
+          }
+          onSubmit={(ui) => {
+            if (uiModalOpen) handleUiUpdate(uiModalOpen, ui);
+          }}
+        />
+      </Modal>
 
       <Modal
         isOpen={configModalOpen === "ecm"}

@@ -1,4 +1,5 @@
 "use client";
+import { expandUiColor, isUiColor, normalizeUiColor } from "@/lib/plugin-ui";
 import { cn } from "@/lib/utils";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useState } from "react";
@@ -144,6 +145,31 @@ export default function RenderInput<TControl extends FieldValues>({
             ))}
           </SelectContent>
         </Select>
+      );
+    case "color":
+      // Hex color without leading #, e.g. "222" or "1A2B3C"
+      return (
+        <div className={cn("flex w-full items-center gap-2", className)}>
+          <input
+            type="color"
+            aria-label={label ? `${label} color picker` : "Color picker"}
+            disabled={isDisabled || isLoading}
+            value={`#${isUiColor(field.value ?? "") ? expandUiColor(field.value) : "000000"}`}
+            onChange={(e) => field.onChange(normalizeUiColor(e.target.value))}
+            className="border-input h-9 w-10 shrink-0 cursor-pointer rounded-md border bg-transparent p-1 disabled:cursor-not-allowed disabled:opacity-50"
+          />
+          <Input
+            placeholder={placeholder}
+            disabled={isDisabled || isLoading}
+            {...field}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(normalizeUiColor(e.target.value))}
+            maxLength={7}
+            className="font-mono"
+            error={!!error}
+            autoFocus={autoFocus}
+          />
+        </div>
       );
     case "checkbox":
       return (
