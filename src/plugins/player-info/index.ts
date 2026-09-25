@@ -33,7 +33,7 @@ export default class PlayerInfoPlugin extends Plugin<PlayerInfoPluginConfig | nu
     this.widget = new Widget(manialinkManager);
     this.widget.setTemplate("widgets/player-info/player-info");
     this.widget.setId("player-info-widget");
-    this.widget.setPosition({ x: -156, y: -49 });
+    this.applyUi(this.widget);
   }
 
   async onLoad() {
@@ -52,6 +52,10 @@ export default class PlayerInfoPlugin extends Plugin<PlayerInfoPluginConfig | nu
   async onStart() {
     this.widget.display();
     this.updatePlayerInfos();
+  }
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
   }
 
   async onConfigUpdate() {

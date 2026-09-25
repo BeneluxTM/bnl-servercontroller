@@ -21,10 +21,9 @@ Commands:
   ) {
     super(clientManager, manialinkManager);
     this.widget = new Widget(manialinkManager, undefined, false);
-    this.widget.setHideWhileDriving(true);
     this.widget.setTemplate("widgets/notify-admin/notify-admin");
     this.widget.setId("notify-admin-widget");
-    this.widget.setPosition({ x: 119, y: -70 });
+    this.applyUi(this.widget);
     this.widget.setData({
       notifyAdminAction: "notify-admin-action",
     });
@@ -52,6 +51,10 @@ Commands:
 
   async onStart() {
     this.widget.display();
+  }
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
   }
 
   onPlayerManialinkPageAnswer = async (

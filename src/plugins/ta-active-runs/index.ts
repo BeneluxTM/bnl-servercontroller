@@ -29,7 +29,7 @@ export default class TAActiveRunsPlugin extends Plugin {
     this.widget = new Widget(manialinkManager);
     this.widget.setTemplate("widgets/ta-active-runs/ta-active-runs");
     this.widget.setId("ta-active-runs-widget");
-    this.widget.setPosition({ x: -156, y: 73.5 });
+    this.applyUi(this.widget);
   }
 
   async onLoad() {
@@ -54,6 +54,10 @@ export default class TAActiveRunsPlugin extends Plugin {
   async onStart() {
     this.widget.display();
     this.clearActiveRuns();
+  }
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
   }
 
   async onBeginMap() {

@@ -1,5 +1,6 @@
 import { Handlebars } from "@/lib/handlebars";
 import "@/lib/manialink/compiled_templates";
+import { PluginUiValues } from "@/types/plugins/ui";
 import "server-only";
 import ManialinkManager from "../../managers/manialink-manager";
 
@@ -22,6 +23,8 @@ export default class Manialink {
   private size: Vector2 = { x: 100, y: 80 };
   private title: string = "";
   private hideWhileDriving: boolean = false;
+  private ui: PluginUiValues | null = null;
+  private displayed: boolean = false;
 
   constructor(
     manialinkManager: ManialinkManager,
@@ -38,18 +41,25 @@ export default class Manialink {
   }
 
   public display() {
+    this.displayed = true;
     this.manialinkManager.displayManialink(this.id, this.render(), this.login);
     this.updateManialink?.display();
   }
 
   public hide() {
+    this.displayed = false;
     this.manialinkManager.hideManialink(this.id, this.login);
     this.updateManialink?.hide();
   }
 
   public destroy() {
+    this.displayed = false;
     this.manialinkManager.destroyManialink(this.id, this.login);
     this.updateManialink?.destroy();
+  }
+
+  public isDisplayed(): boolean {
+    return this.displayed;
   }
 
   public update() {
@@ -66,9 +76,15 @@ export default class Manialink {
       title: this.title,
       hideWhileDriving: this.hideWhileDriving,
       data: this.data,
+      ui: this.ui,
     });
 
     return manialink;
+  }
+
+  /** Customized UI of the plugin that owns this manialink, available as `ui` in the templates. */
+  public setUi(ui: PluginUiValues | null) {
+    this.ui = ui;
   }
 
   public setPosition(position: Vector2) {

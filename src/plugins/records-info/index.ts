@@ -41,10 +41,9 @@ export default class RecordsInfoPlugin extends Plugin<RecordsInfoPluginConfig | 
   ) {
     super(clientManager, manialinkManager);
     this.widget = new Widget(manialinkManager);
-    this.widget.setHideWhileDriving(true);
     this.widget.setTemplate("widgets/records-info/records-info");
     this.widget.setId("records-info-widget");
-    this.widget.setPosition({ x: 100, y: 73.5 });
+    this.applyUi(this.widget);
   }
 
   async onLoad() {
@@ -77,6 +76,10 @@ export default class RecordsInfoPlugin extends Plugin<RecordsInfoPluginConfig | 
       },
     };
     this.updateRecordsInfo();
+  }
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
   }
 
   async onConfigUpdate() {

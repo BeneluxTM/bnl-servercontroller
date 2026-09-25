@@ -1,11 +1,11 @@
 {{#extend "manialink"}}
 {{#content "content"}}
 <frame id="window" pos="-{{ divide size.x 2 }} {{ divide size.y 2}}" size="{{ size.x }} {{ add size.y 5 }}" z-index="20">
-  <quad pos="0 0" size="{{ size.x }} 5" bgcolor="222" />
-  <label pos="1.5 -2.25" text="{{ title }}" size="{{ subtract size.x 9.5 }} 5" valign="center" halign="left" textsize="1" color="DDD" textfont="GameFontSemiBold" />
-  <label pos="{{ subtract size.x 1.5 }} -2.25" text="" size="5 5" valign="center" halign="right" textsize="1" color="222" action="close-window-{{id}}" focusareacolor2="fff0" />
+  <quad pos="0 0" size="{{ size.x }} 5" bgcolor="{{ default ui.colors.windowHeaderBackground '222' }}" />
+  <label pos="1.5 -2.25" text="{{ title }}" size="{{ subtract size.x 9.5 }} 5" valign="center" halign="left" textsize="1" textcolor="{{ default ui.colors.windowHeaderText 'FFF' }}" textfont="GameFontSemiBold" />
+  <label pos="{{ subtract size.x 1.5 }} -2.25" text="" size="5 5" valign="center" halign="right" textsize="1" textcolor="{{ default ui.colors.windowHeaderText 'FFF' }}" action="close-window-{{id}}" focusareacolor2="fff0" />
 
-  <quad pos="0 -5" size="{{ size.x }} {{ size.y }}" bgcolor="DDD" />
+  <quad pos="0 -5" size="{{ size.x }} {{ size.y }}" bgcolor="{{ default ui.colors.windowBackground 'DDD' }}" />
   <frame pos="0 -5" size="{{ size.x }} {{ size.y }}">
     {{#block "window"}}{{/block}}
   </frame>

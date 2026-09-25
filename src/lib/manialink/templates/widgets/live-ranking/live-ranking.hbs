@@ -1,31 +1,34 @@
 {{#extend "widget"}}
 {{#content "widget"}}
 <frame pos="0 0">
-  <quad pos="0 0" z-index="0" size="55 5" bgcolor="222"/>
-  <label pos="27.5 -2.25" z-index="0" size="55 5" text="Live Ranking" halign="center" textsize="1" textfont="GameFontSemiBold" valign="center"/>
+  <quad pos="0 0" z-index="0" size="{{ ui.layout.width }} {{ ui.spacing.headerHeight }}" bgcolor="{{ ui.colors.headerBackground }}" opacity="{{ ui.colors.headerOpacity }}"/>
+  <label pos="{{ divide ui.layout.width 2 }} {{ labelY ui.spacing.headerHeight }}" z-index="0" size="{{ ui.layout.width }} {{ ui.spacing.headerHeight }}" text="{{ ui.texts.title }}" halign="center" textsize="{{ ui.textSizes.title }}" textcolor="{{ ui.colors.headerText }}" textfont="{{ ui.fonts.title }}" valign="center"/>
 </frame>
 
 <framemodel id="ranking">
-  <quad pos="0 0" z-index="0" size="5 5" bgcolor="222"/>
-  <quad pos="5 0" z-index="0" size="50 5" bgcolor="DDD"/>
-  <label pos="2.4 -2.25" z-index="0" size="5 5" text="0" halign="center" valign="center" textsize="1.25" textcolor="DDD" textfont="GameFontSemiBold"/>
-  <quad pos="6.25 -1" z-index="0" size="4.5 3" bgcolor="DDD" image="file://Media/Flags/WOR.dds"/>
-  <label pos="12 -2.25" z-index="0" size="32 5" text="-" textcolor="222" textsize="1.2" textfont="GameFontRegular" valign="center"/>
-  <label pos="53 -2.25" z-index="0" size="7.5 5" text="0" valign="center" halign="right" textsize="1" textcolor="222" textfont="GameFontSemiBold"/>
+  <quad pos="0 0" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+  <quad pos="{{ ui.spacing.rowHeight }} 0" z-index="0" size="{{ subtract ui.layout.width ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+  <label pos="{{ subtract (divide ui.spacing.rowHeight 2) 0.1 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" text="0" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" textfont="{{ ui.fonts.accent }}"/>
+  <quad pos="{{ add ui.spacing.rowHeight 1.25 }} {{ subtract 1.5 (divide ui.spacing.rowHeight 2) }}" z-index="0" size="4.5 3" bgcolor="{{ ui.colors.rowBackground }}" image="file://Media/Flags/WOR.dds"/>
+  <label pos="{{ add ui.spacing.rowHeight 7 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ subtract ui.layout.width (add ui.spacing.rowHeight 18) }} {{ ui.spacing.rowHeight }}" text="-" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.name }}" textfont="{{ ui.fonts.name }}" valign="center"/>
+  <label pos="{{ subtract ui.layout.width 2 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="7.5 {{ ui.spacing.rowHeight }}" text="0" valign="center" halign="right" textsize="{{ ui.textSizes.points }}" textcolor="{{ ui.colors.rowText }}" textfont="{{ ui.fonts.points }}"/>
 
-  <quad class="trigger" pos="0 0" z-index="-2" size="55 5" bgcolor="000" opacity="0" scriptevents="1" />
+  <quad class="trigger" pos="0 0" z-index="-2" size="{{ ui.layout.width }} {{ ui.spacing.rowHeight }}" bgcolor="000" opacity="0" scriptevents="1" />
 </framemodel>
 
-<frame id="rankings" pos="0 -5.25" size="55 42">
-<quad size="55 {{ multiply 100 5.25 }}" bgcolor="fff" opacity="0" scriptevents="1"/>
+<frame id="rankings" pos="0 {{ neg (add ui.spacing.headerHeight ui.spacing.rowGap) }}" size="{{ ui.layout.width }} {{ multiply ui.layout.visibleRows (add ui.spacing.rowHeight ui.spacing.rowGap) }}">
+<quad size="{{ ui.layout.width }} {{ multiply 100 (add ui.spacing.rowHeight ui.spacing.rowGap) }}" bgcolor="fff" opacity="0" scriptevents="1"/>
 {{#range 0 100}}
-  <frameinstance modelid="ranking" pos="0 {{ multiply i -5.25 }}" />
+<frameinstance modelid="ranking" pos="0 {{ multiply i (neg (add @root.ui.spacing.rowHeight @root.ui.spacing.rowGap)) }}" />
 {{/range}}
 </frame>
 {{/content}}
 
 
 {{#content "globals"}}
+#Const C_RowStep {{ real (add ui.spacing.rowHeight ui.spacing.rowGap) }}
+#Const C_ListHeight {{ real (multiply ui.layout.visibleRows (add ui.spacing.rowHeight ui.spacing.rowGap)) }}
+
 #Struct Team {
   Text mainColor;
   Text secondaryColor;
@@ -83,11 +86,11 @@ Void updateRankingRow(Integer index, Ranking ranking, Text mode, Integer pointsL
     (rankingFrame.Controls[4] as CMlLabel).TextColor = CL::Hex3ToRgb(ranking.team.textColor);
     (rankingFrame.Controls[5] as CMlLabel).TextColor = CL::Hex3ToRgb(ranking.team.textColor);
   } else {
-    (rankingFrame.Controls[0] as CMlQuad).BgColor = CL::Hex3ToRgb("222");
-    (rankingFrame.Controls[1] as CMlQuad).BgColor = CL::Hex3ToRgb("DDD");
-    (rankingFrame.Controls[3] as CMlQuad).BgColor = CL::Hex3ToRgb("DDD");
-    (rankingFrame.Controls[4] as CMlLabel).TextColor = CL::Hex3ToRgb("222");
-    (rankingFrame.Controls[5] as CMlLabel).TextColor = CL::Hex3ToRgb("222");
+    (rankingFrame.Controls[0] as CMlQuad).BgColor = {{ vec3 ui.colors.accentBackground }};
+    (rankingFrame.Controls[1] as CMlQuad).BgColor = {{ vec3 ui.colors.rowBackground }};
+    (rankingFrame.Controls[3] as CMlQuad).BgColor = {{ vec3 ui.colors.rowBackground }};
+    (rankingFrame.Controls[4] as CMlLabel).TextColor = {{ vec3 ui.colors.rowText }};
+    (rankingFrame.Controls[5] as CMlLabel).TextColor = {{ vec3 ui.colors.rowText }};
   }
 
   rankingFrame.Show();
@@ -99,7 +102,7 @@ Void updateScroll(Ranking[] rankings) {
   if (rankingCount > rankingsFrame.Controls.count) {
     rankingCount = rankingsFrame.Controls.count;
   }
-  declare Real maxY = rankingCount * 5.25 - 42;
+  declare Real maxY = rankingCount * C_RowStep - C_ListHeight;
   if (maxY < 0) {
     maxY = 0.;
   }

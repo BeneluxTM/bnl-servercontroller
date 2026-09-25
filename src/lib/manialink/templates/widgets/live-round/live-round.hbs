@@ -1,41 +1,44 @@
 {{#extend "widget"}}
 {{#content "widget"}}
 <frame pos="0 0">
-  <quad pos="0 0" z-index="0" size="55 5" bgcolor="222"/>
-  <label pos="27.5 -2.25" z-index="0" size="55 5" text="Live Round" halign="center" textsize="1" textfont="GameFontSemiBold" valign="center"/>
+  <quad pos="0 0" z-index="0" size="{{ ui.layout.width }} {{ ui.spacing.headerHeight }}" bgcolor="{{ ui.colors.headerBackground }}" opacity="{{ ui.colors.headerOpacity }}"/>
+  <label pos="{{ divide ui.layout.width 2 }} {{ labelY ui.spacing.headerHeight }}" z-index="0" size="{{ ui.layout.width }} {{ ui.spacing.headerHeight }}" text="{{ ui.texts.title }}" halign="center" textsize="{{ ui.textSizes.title }}" textcolor="{{ ui.colors.headerText }}" textfont="{{ ui.fonts.title }}" valign="center"/>
 </frame>
 
 <framemodel id="round">
-  <quad pos ="0 0" z-index="0" size="5 5" bgcolor="222"/>
-  <quad pos="5 0" z-index="0" size="35.5 5" bgcolor="DDD"/>
-  <quad pos="40.5 0" z-index="0" size="14.5 5" bgcolor="BBB"/>
-  <label pos="2.4 -2.25" z-index="0" size="5 5" text="0" halign="center" valign="center" textsize="1.25" textcolor="DDD" textfont="GameFontSemiBold"/>
-  <quad pos="6.25 -1" z-index="0" size="4.5 3" bgcolor="DDD" image="file://Media/Flags/WOR.dds"/>
-  <label pos="12 -2.25" z-index="0" size="22 5" text="-" textcolor="222" textsize="1.2" textfont="GameFontRegular" valign="center"/>
-  <label pos="39.75 -2.25" z-index="0" size="5 5" text="0" halign="right" textcolor="222" textsize="1" textfont="GameFontSemiBold" valign="center"/>
-  <label pos="54 -2.25" z-index="0" size="12.5 5" text="--:--.---" valign="center" halign="right" textsize="1" textcolor="222" textfont="GameFontSemiBold"/>
-  
-  <frame pos="47.5 0" size="14 5" id="finish" z-index="-2">
-    <quad pos="0 0" size="7 5" bgcolor="222" z-index="-2" />
-    <label pos="3.5 -2.25" size="6 5" z-index="-1" text="" halign="center" valign="center" textsize="1.25" textcolor="DDD" />
+  <quad pos ="0 0" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+  <quad pos="{{ ui.spacing.rowHeight }} 0" z-index="0" size="{{ subtract ui.layout.width (add ui.spacing.rowHeight 14.5) }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+  <quad pos="{{ subtract ui.layout.width 14.5 }} 0" z-index="0" size="14.5 {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.secondaryBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+  <label pos="{{ subtract (divide ui.spacing.rowHeight 2) 0.1 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" text="0" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" textfont="{{ ui.fonts.accent }}"/>
+  <quad pos="{{ add ui.spacing.rowHeight 1.25 }} {{ subtract 1.5 (divide ui.spacing.rowHeight 2) }}" z-index="0" size="4.5 3" bgcolor="{{ ui.colors.rowBackground }}" image="file://Media/Flags/WOR.dds"/>
+  <label pos="{{ add ui.spacing.rowHeight 7 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ subtract ui.layout.width (add ui.spacing.rowHeight 28) }} {{ ui.spacing.rowHeight }}" text="-" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.name }}" textfont="{{ ui.fonts.name }}" valign="center"/>
+  <label pos="{{ subtract ui.layout.width 15.25 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="5 {{ ui.spacing.rowHeight }}" text="0" halign="right" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.points }}" textfont="{{ ui.fonts.points }}" valign="center"/>
+  <label pos="{{ subtract ui.layout.width 1 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="12.5 {{ ui.spacing.rowHeight }}" text="--:--.---" valign="center" halign="right" textsize="{{ ui.textSizes.time }}" textcolor="{{ ui.colors.secondaryText }}" textfont="{{ ui.fonts.time }}"/>
 
-    <quad pos="7 0" size="7 5" bgcolor="222" z-index="-2" hidden="1" />
-    <label pos="10.5 -2.25" size="6 5" z-index="-1" text="WR" halign="center" valign="center" textsize="1.25" textfont="GameFontSemiBold" textcolor="DDD" hidden="1" />
+  <frame pos="{{ subtract ui.layout.width 7.5 }} 0" size="14 {{ ui.spacing.rowHeight }}" id="finish" z-index="-2">
+    <quad pos="0 0" size="7 {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}" z-index="-2" />
+    <label pos="3.5 {{ labelY ui.spacing.rowHeight }}" size="6 {{ ui.spacing.rowHeight }}" z-index="-1" text="" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" />
+
+    <quad pos="7 0" size="7 {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}" z-index="-2" hidden="1" />
+    <label pos="10.5 {{ labelY ui.spacing.rowHeight }}" size="6 {{ ui.spacing.rowHeight }}" z-index="-1" text="WR" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textfont="{{ ui.fonts.accent }}" textcolor="{{ ui.colors.accentText }}" hidden="1" />
   </frame>
 
-  <quad class="trigger" pos="0 0" z-index="-2" size="57 5" bgcolor="000" opacity="0" scriptevents="1" />
+  <quad class="trigger" pos="0 0" z-index="-2" size="{{ add ui.layout.width 2 }} {{ ui.spacing.rowHeight }}" bgcolor="000" opacity="0" scriptevents="1" />
 </framemodel>
 
-<frame id="rounds" pos="0 -5.25" size="69 42">
-<quad size="55 {{ multiply 100 5.25 }}" bgcolor="fff" opacity="0" scriptevents="1"/>
+<frame id="rounds" pos="0 {{ neg (add ui.spacing.headerHeight ui.spacing.rowGap) }}" size="{{ add ui.layout.width 14 }} {{ multiply (default data.rowCount 8) (add ui.spacing.rowHeight ui.spacing.rowGap) }}">
+<quad size="{{ ui.layout.width }} {{ multiply 100 (add ui.spacing.rowHeight ui.spacing.rowGap) }}" bgcolor="fff" opacity="0" scriptevents="1"/>
 {{#range 0 100}}
-<frameinstance modelid="round" pos="0 {{ multiply i -5.25 }}" />
+<frameinstance modelid="round" pos="0 {{ multiply i (neg (add @root.ui.spacing.rowHeight @root.ui.spacing.rowGap)) }}" />
 {{/range}}
 </frame>
 {{/content}}
 
 
 {{#content "globals"}}
+#Const C_RowStep {{ real (add ui.spacing.rowHeight ui.spacing.rowGap) }}
+#Const C_ListWidth {{ real (add ui.layout.width 14) }}
+
 #Struct Team {
   Text mainColor;
   Text secondaryColor;
@@ -226,13 +229,13 @@ Void updateRoundRow(Integer index, Round round, Integer checkpointGap, Text mode
     (roundFrame.Controls[6] as CMlLabel).TextColor = CL::Hex3ToRgb(round.team.textColor);
     (roundFrame.Controls[7] as CMlLabel).TextColor = CL::Hex3ToRgb(round.team.textColor);
   } else {
-    (roundFrame.Controls[0] as CMlQuad).BgColor = CL::Hex3ToRgb("222");
-    (roundFrame.Controls[1] as CMlQuad).BgColor = CL::Hex3ToRgb("DDD");
-    (roundFrame.Controls[2] as CMlQuad).BgColor = CL::Hex3ToRgb("BBB");
-    (roundFrame.Controls[4] as CMlQuad).BgColor = CL::Hex3ToRgb("DDD");
-    (roundFrame.Controls[5] as CMlLabel).TextColor = CL::Hex3ToRgb("222");
-    (roundFrame.Controls[6] as CMlLabel).TextColor = CL::Hex3ToRgb("222");
-    (roundFrame.Controls[7] as CMlLabel).TextColor = CL::Hex3ToRgb("222");
+    (roundFrame.Controls[0] as CMlQuad).BgColor = {{ vec3 ui.colors.accentBackground }};
+    (roundFrame.Controls[1] as CMlQuad).BgColor = {{ vec3 ui.colors.rowBackground }};
+    (roundFrame.Controls[2] as CMlQuad).BgColor = {{ vec3 ui.colors.secondaryBackground }};
+    (roundFrame.Controls[4] as CMlQuad).BgColor = {{ vec3 ui.colors.rowBackground }};
+    (roundFrame.Controls[5] as CMlLabel).TextColor = {{ vec3 ui.colors.rowText }};
+    (roundFrame.Controls[6] as CMlLabel).TextColor = {{ vec3 ui.colors.rowText }};
+    (roundFrame.Controls[7] as CMlLabel).TextColor = {{ vec3 ui.colors.secondaryText }};
   }
 
   roundFrame.Show();
@@ -287,9 +290,9 @@ Void updateFinish(Text login, Integer points, Boolean finished, Boolean isPerson
           (frameFinish.Controls[3] as CMlLabel).Hide();
         }
         
-        AnimMgr.Add(frameFinish, """<frame pos='55 0' />""", 600, CAnimManager::EAnimManagerEasing::ExpInOut);
+        AnimMgr.Add(frameFinish, """<frame pos='{{ ui.layout.width }} 0' />""", 600, CAnimManager::EAnimManagerEasing::ExpInOut);
       } else {
-        AnimMgr.Add(frameFinish, """<frame pos='47.5 0' />""", 600, CAnimManager::EAnimManagerEasing::ExpInOut);
+        AnimMgr.Add(frameFinish, """<frame pos='{{ subtract ui.layout.width 7.5 }} 0' />""", 600, CAnimManager::EAnimManagerEasing::ExpInOut);
         (frameFinish.Controls[2] as CMlQuad).Hide();
         (frameFinish.Controls[3] as CMlLabel).Hide();
       }
@@ -311,12 +314,12 @@ Void updateScroll(Round[] rounds, Integer rowCount) {
   if (roundCount > roundsFrame.Controls.count) {
     roundCount = roundsFrame.Controls.count;
   }
-  declare Real maxY = (roundCount - rowCount) * 5.25;
+  declare Real maxY = (roundCount - rowCount) * C_RowStep;
   if (maxY < 0) {
     maxY = 0.;
   }
   roundsFrame.ScrollMax = <0., maxY>;
-  roundsFrame.Size = <69., rowCount * 5.25>;
+  roundsFrame.Size = <C_ListWidth, rowCount * C_RowStep>;
 }
 
 Void updateWidget(Round[] rounds, Text mode, Integer pointsLimit, Integer rowCount) {

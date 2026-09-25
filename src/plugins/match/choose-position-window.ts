@@ -31,11 +31,7 @@ export default class ChoosePositionWindow extends Window {
       x: this.positionsAvailable.length * 12 + 2,
       y: 14,
     });
-    this.setData({
-      currentAction: this.currentAction,
-      positionsAvailable: this.positionsAvailable,
-      choosePositionAction: "match-pickban-choose-position",
-    });
+    this.updateData();
 
     this.clientManager.onAction(
       "match-pickban-choose-position-{position}",
@@ -60,10 +56,16 @@ export default class ChoosePositionWindow extends Window {
     this.update();
   }
 
-  update() {
+  updateData() {
     this.setData({
       currentAction: this.currentAction,
+      positionsAvailable: this.positionsAvailable,
+      choosePositionAction: "match-pickban-choose-position",
     });
+  }
+
+  update() {
+    this.updateData();
     super.update();
   }
 

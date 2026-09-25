@@ -66,7 +66,7 @@ export default class LiveRoundPlugin extends Plugin<LiveRoundPluginConfig | null
     this.widget = new Widget(manialinkManager);
     this.widget.setTemplate("widgets/live-round/live-round");
     this.widget.setId("live-round-widget");
-    this.widget.setPosition({ x: -156, y: 73.5 });
+    this.applyUi(this.widget);
   }
 
   async onLoad() {
@@ -95,6 +95,10 @@ export default class LiveRoundPlugin extends Plugin<LiveRoundPluginConfig | null
     this.widget.display();
     this.clearLiveRound();
     this.updateRecordsInfo();
+  }
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
   }
 
   async onPlayerConnect(playerInfo: PlayerInfo) {
