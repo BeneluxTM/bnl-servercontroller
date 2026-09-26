@@ -863,6 +863,17 @@ const MAX_ZOOM = 8;
 const clamp = (value: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, value));
 
+// Keeps the view inside the screen, so 1x always shows all of it.
+const clampView = (zoom: number, cx: number, cy: number) => {
+  const halfW = 160 / zoom;
+  const halfH = 90 / zoom;
+  return {
+    zoom,
+    cx: clamp(cx, -160 + halfW, 160 - halfW),
+    cy: clamp(cy, -90 + halfH, 90 - halfH),
+  };
+};
+
 export default function PluginUiPreview({
   pluginName,
   ui,
@@ -915,11 +926,11 @@ export default function PluginUiPreview({
       const curY = prev.cy - prevH / 2 + fy * prevH;
       const nextW = 320 / nextZoom;
       const nextH = 180 / nextZoom;
-      return {
-        zoom: nextZoom,
-        cx: clamp(curX - fx * nextW + nextW / 2, -160, 160),
-        cy: clamp(curY - fy * nextH + nextH / 2, -90, 90),
-      };
+      return clampView(
+        nextZoom,
+        curX - fx * nextW + nextW / 2,
+        curY - fy * nextH + nextH / 2,
+      );
     });
   }, []);
   const resetView = useCallback(() => setView({ zoom: 1, cx: 0, cy: 0 }), []);
@@ -998,11 +1009,7 @@ export default function PluginUiPreview({
     if (!started || started.pointerId !== e.pointerId || !box) return;
     const dx = ((e.clientX - started.clientX) / box.width) * viewW;
     const dy = ((e.clientY - started.clientY) / box.height) * viewH;
-    setView((prev) => ({
-      ...prev,
-      cx: clamp(started.cx - dx, -160, 160),
-      cy: clamp(started.cy - dy, -90, 90),
-    }));
+    setView((prev) => clampView(prev.zoom, started.cx - dx, started.cy - dy));
   };
 
   const handleBackgroundPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
