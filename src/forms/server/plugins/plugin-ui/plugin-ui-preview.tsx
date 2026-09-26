@@ -1,8 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { expandUiColor, isUiColor } from "@/lib/plugin-ui";
 import { PluginUiSection, PluginUiValues } from "@/types/plugins/ui";
-import { ReactNode, useRef } from "react";
+import { IconZoomIn, IconZoomOut, IconZoomReset } from "@tabler/icons-react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 /*
  * Approximate preview of a plugin's in-game UI on a 320x180 manialink screen.
@@ -854,6 +856,13 @@ function renderPlugin(pluginName: string, ui: Ui): Rendered | null {
   }
 }
 
+// The preview's own zoom, independent of the widget's "scale" UI field —
+// 1x shows the full 320x180 manialink screen (the previous, only, view).
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 8;
+const clamp = (value: number, lo: number, hi: number) =>
+  Math.min(hi, Math.max(lo, value));
+
 export default function PluginUiPreview({
   pluginName,
   ui,
@@ -870,8 +879,65 @@ export default function PluginUiPreview({
     x: number;
     y: number;
   } | null>(null);
+  const pan = useRef<{
+    pointerId: number;
+    clientX: number;
+    clientY: number;
+    cx: number;
+    cy: number;
+  } | null>(null);
+
+  // The centre of the view, in the same -160..160 / -90..90 manialink
+  // space as everything else here; zoom shrinks how much of it is shown.
+  const [view, setView] = useState({ zoom: 1, cx: 0, cy: 0 });
+  const viewW = 320 / view.zoom;
+  const viewH = 180 / view.zoom;
+  const viewX = view.cx - viewW / 2;
+  const viewY = view.cy - viewH / 2;
 
   const rendered = renderPlugin(pluginName, ui);
+
+  // Keeps the point under the cursor/pinch-centre fixed while the zoom
+  // changes — the standard "zoom to point" trick, computed from the
+  // element's own rendered box rather than getScreenCTM so it works out
+  // to the same view whatever the current viewBox already is.
+  const zoomAt = useCallback((clientX: number, clientY: number, factor: number) => {
+    const box = svgRef.current?.getBoundingClientRect();
+    if (!box) return;
+    const fx = (clientX - box.left) / box.width;
+    const fy = (clientY - box.top) / box.height;
+    setView((prev) => {
+      const nextZoom = clamp(prev.zoom * factor, MIN_ZOOM, MAX_ZOOM);
+      if (nextZoom === prev.zoom) return prev;
+      const prevW = 320 / prev.zoom;
+      const prevH = 180 / prev.zoom;
+      const curX = prev.cx - prevW / 2 + fx * prevW;
+      const curY = prev.cy - prevH / 2 + fy * prevH;
+      const nextW = 320 / nextZoom;
+      const nextH = 180 / nextZoom;
+      return {
+        zoom: nextZoom,
+        cx: clamp(curX - fx * nextW + nextW / 2, -160, 160),
+        cy: clamp(curY - fy * nextH + nextH / 2, -90, 90),
+      };
+    });
+  }, []);
+  const resetView = useCallback(() => setView({ zoom: 1, cx: 0, cy: 0 }), []);
+
+  // A React onWheel handler can't preventDefault (passive by default), so
+  // the page would scroll along with the zoom; a manually-attached
+  // listener can opt out of that.
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.2 : 1 / 1.2);
+    };
+    svg.addEventListener("wheel", onWheel, { passive: false });
+    return () => svg.removeEventListener("wheel", onWheel);
+  }, [zoomAt]);
+
   if (!rendered) return null;
 
   const x = rendered.position?.x ?? num(ui, "layout", "x", 0);
@@ -887,6 +953,8 @@ export default function PluginUiPreview({
   };
 
   const handlePointerDown = (e: React.PointerEvent<SVGRectElement>) => {
+    // Keep the background pan below from also starting on this pointer.
+    e.stopPropagation();
     const point = toScreen(e);
     if (!point) return;
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -894,6 +962,7 @@ export default function PluginUiPreview({
   };
 
   const handlePointerMove = (e: React.PointerEvent<SVGRectElement>) => {
+    e.stopPropagation();
     const point = toScreen(e);
     if (!drag.current || !point || !onMove) return;
     const round = (value: number) => Math.round(value * 2) / 2;
@@ -904,61 +973,155 @@ export default function PluginUiPreview({
     );
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = (e: React.PointerEvent<SVGRectElement>) => {
+    e.stopPropagation();
     drag.current = null;
+  };
+
+  // Drag-to-pan on the background (anywhere that isn't the widget's own
+  // drag rect, which stops propagation before this ever sees the event).
+  const handleBackgroundPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.button !== 0) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    pan.current = {
+      pointerId: e.pointerId,
+      clientX: e.clientX,
+      clientY: e.clientY,
+      cx: view.cx,
+      cy: view.cy,
+    };
+  };
+
+  const handleBackgroundPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    const started = pan.current;
+    const box = svgRef.current?.getBoundingClientRect();
+    if (!started || started.pointerId !== e.pointerId || !box) return;
+    const dx = ((e.clientX - started.clientX) / box.width) * viewW;
+    const dy = ((e.clientY - started.clientY) / box.height) * viewH;
+    setView((prev) => ({
+      ...prev,
+      cx: clamp(started.cx - dx, -160, 160),
+      cy: clamp(started.cy - dy, -90, 90),
+    }));
+  };
+
+  const handleBackgroundPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (pan.current?.pointerId === e.pointerId) pan.current = null;
   };
 
   return (
     <div className="flex flex-col gap-1">
-      <svg
-        ref={svgRef}
-        viewBox="-160 -90 320 180"
-        className="aspect-video w-full touch-none select-none rounded-md border bg-gradient-to-b from-slate-700 via-slate-800 to-zinc-900"
-        role="img"
-        aria-label="Preview of the in-game UI"
-      >
-        <line
-          x1={-160}
-          y1={0}
-          x2={160}
-          y2={0}
-          stroke="#FFFFFF"
-          strokeOpacity={0.06}
-          strokeWidth={0.4}
-        />
-        <line
-          x1={0}
-          y1={-90}
-          x2={0}
-          y2={90}
-          stroke="#FFFFFF"
-          strokeOpacity={0.06}
-          strokeWidth={0.4}
-        />
-        <g transform={`translate(${x} ${-y}) scale(${scale})`}>
-          {rendered.content}
-          {draggable && (
-            <rect
-              x={0}
-              y={0}
-              width={rendered.width}
-              height={rendered.height}
-              fill="transparent"
-              stroke="#FFFFFF"
-              strokeOpacity={0.35}
-              strokeDasharray="1.5 1"
-              strokeWidth={0.4 / scale}
-              className="cursor-move"
-              onPointerDown={handlePointerDown}
-              onPointerMove={handlePointerMove}
-              onPointerUp={handlePointerUp}
-              onPointerCancel={handlePointerUp}
-            />
+      <div className="relative">
+        <svg
+          ref={svgRef}
+          viewBox={`${viewX} ${viewY} ${viewW} ${viewH}`}
+          className="aspect-video w-full touch-none select-none rounded-md border bg-gradient-to-b from-slate-700 via-slate-800 to-zinc-900"
+          style={{ cursor: view.zoom > MIN_ZOOM ? "grab" : undefined }}
+          role="img"
+          aria-label="Preview of the in-game UI"
+          onPointerDown={handleBackgroundPointerDown}
+          onPointerMove={handleBackgroundPointerMove}
+          onPointerUp={handleBackgroundPointerUp}
+          onPointerCancel={handleBackgroundPointerUp}
+        >
+          <line
+            x1={-160}
+            y1={0}
+            x2={160}
+            y2={0}
+            stroke="#FFFFFF"
+            strokeOpacity={0.06}
+            strokeWidth={0.4}
+          />
+          <line
+            x1={0}
+            y1={-90}
+            x2={0}
+            y2={90}
+            stroke="#FFFFFF"
+            strokeOpacity={0.06}
+            strokeWidth={0.4}
+          />
+          <g transform={`translate(${x} ${-y}) scale(${scale})`}>
+            {rendered.content}
+            {draggable && (
+              <rect
+                x={0}
+                y={0}
+                width={rendered.width}
+                height={rendered.height}
+                fill="transparent"
+                stroke="#FFFFFF"
+                strokeOpacity={0.35}
+                strokeDasharray="1.5 1"
+                strokeWidth={0.4 / scale}
+                className="cursor-move"
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
+              />
+            )}
+          </g>
+        </svg>
+
+        <div className="absolute right-2 top-2 flex gap-1">
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            className="size-7"
+            title="Zoom out"
+            aria-label="Zoom out"
+            disabled={view.zoom <= MIN_ZOOM}
+            onClick={() => {
+              const box = svgRef.current?.getBoundingClientRect();
+              zoomAt(
+                (box?.left ?? 0) + (box?.width ?? 0) / 2,
+                (box?.top ?? 0) + (box?.height ?? 0) / 2,
+                1 / 1.5,
+              );
+            }}
+          >
+            <IconZoomOut className="size-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            className="size-7"
+            title="Zoom in"
+            aria-label="Zoom in"
+            disabled={view.zoom >= MAX_ZOOM}
+            onClick={() => {
+              const box = svgRef.current?.getBoundingClientRect();
+              zoomAt(
+                (box?.left ?? 0) + (box?.width ?? 0) / 2,
+                (box?.top ?? 0) + (box?.height ?? 0) / 2,
+                1.5,
+              );
+            }}
+          >
+            <IconZoomIn className="size-4" />
+          </Button>
+          {view.zoom > MIN_ZOOM && (
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon"
+              className="size-7"
+              title="Reset zoom"
+              aria-label="Reset zoom"
+              onClick={resetView}
+            >
+              <IconZoomReset className="size-4" />
+            </Button>
           )}
-        </g>
-      </svg>
+        </div>
+      </div>
       <p className="text-xs text-muted-foreground">
-        Approximate preview, fonts and text sizes can differ in game.
+        Approximate preview, fonts and text sizes can differ in game. Scroll
+        or use the buttons to zoom, drag the background to pan.
         {draggable && " Drag the widget to change its position."}
       </p>
     </div>

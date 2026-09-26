@@ -252,7 +252,7 @@ export default function PluginUiForm({
         onSubmit={form.handleSubmit(handleSubmit, handleInvalid)}
         className="flex flex-col gap-4"
       >
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
           <div>
             <div className="bg-card lg:sticky lg:top-0">
               <PluginUiPreview
