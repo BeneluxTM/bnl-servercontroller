@@ -3,17 +3,17 @@
 <frame pos="0 0" size="{{ multiply (add (length data.actions) 1) 5 }} 5" z-index="10">
   <frame size="{{ multiply (add (length data.actions) 1) 5 }} 5" pos="{{ multiply (length data.actions) -5 }} 0">
     <frame pos="{{ multiply (length data.actions) 5 }} 0" size="5 5">
-      <quad size="5 5" bgcolor="222" />
-      <label pos="2.6 -2.15" text="" halign="center" valign="center" textsize="2.5" textcolor="DDD" />
+      <quad size="5 5" bgcolor="08080A" />
+      <label pos="2.6 -2.15" text="" halign="center" valign="center" textsize="2.5" textcolor="F4F4F5" />
     </frame>
 
     {{#each data.actions}}
       <frame pos="{{ multiply @index 5 }} 0" size="5 5">
-        <quad size="5 5" bgcolor="DDD" action="{{this.action}}" />
+        <quad size="5 5" bgcolor="16161A" action="{{this.action}}" />
         {{#if (eq this.type "image")}}
           <quad image="{{this.icon}}" size="3.5 3.5" pos="0.75 -0.75" />
         {{else}}
-          <label pos="2.5 -2.1" text="{{this.icon}}" halign="center" valign="center" textsize="2" textcolor="222" />
+          <label pos="2.5 -2.1" text="{{this.icon}}" halign="center" valign="center" textsize="2" textcolor="F4F4F5" />
         {{/if}}
       </frame>
     {{/each}}

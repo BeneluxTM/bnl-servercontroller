@@ -7,22 +7,22 @@ export const ecmUi: PluginUiDefinition = {
     "The eCircuitMania window, opened with /ecm or the action button.",
   sections: {
     colors: {
-      windowHeaderBackground: colorField("Window header background", "222"),
-      windowHeaderText: colorField("Window header text", "FFF"),
-      windowBackground: colorField("Window background", "DDD"),
-      text: colorField("Text", "222"),
+      windowHeaderBackground: colorField("Window header background", "08080A"),
+      windowHeaderText: colorField("Window header text", "F4F4F5"),
+      windowBackground: colorField("Window background", "0F0F12"),
+      text: colorField("Text", "F4F4F5"),
       buttonBackground: colorField(
         "Button background",
-        "CCC",
+        "16161A",
         "Also used as the background of the API key input.",
       ),
-      buttonAccent: colorField("Button underline", "222"),
-      success: colorField("Recording", "2D2"),
-      error: colorField("Not recording and errors", "D22"),
+      buttonAccent: colorField("Button underline", "20A0F1"),
+      success: colorField("Recording", "3FB950"),
+      error: colorField("Not recording and errors", "FF5050"),
     },
     fonts: {
       text: fontField("Text", "GameFontRegular"),
-      label: fontField("Section labels", "GameFontSemiBold"),
+      label: fontField("Section labels", "RajdhaniMono"),
     },
     textSizes: {
       text: textSizeField("Text", 1),

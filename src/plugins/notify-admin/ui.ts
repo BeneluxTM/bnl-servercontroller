@@ -23,10 +23,10 @@ export const notifyAdminUi: PluginUiDefinition = {
       ...hideWhileDrivingField(true),
     },
     colors: {
-      rowBackground: colorField("Button background", "DDD"),
-      rowOpacity: opacityField("Button opacity"),
-      rowText: colorField("Button text", "222"),
-      accentBackground: colorField("Underline", "222"),
+      rowBackground: colorField("Button background", "08080A"),
+      rowOpacity: opacityField("Button opacity", 0.88),
+      rowText: colorField("Button text", "F4F4F5"),
+      accentBackground: colorField("Underline", "20A0F1"),
     },
     fonts: {
       label: fontField("Button text", "GameFontSemiBold"),

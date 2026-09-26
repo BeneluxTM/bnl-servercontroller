@@ -28,7 +28,7 @@ templates['action-group'] = template({"1":function(container,depth0,helpers,part
     + alias3((lookupProperty(helpers,"multiply")||(depth0 && lookupProperty(depth0,"multiply"))||alias2).call(alias1,(lookupProperty(helpers,"length")||(depth0 && lookupProperty(depth0,"length"))||alias2).call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"data") : depth0)) != null ? lookupProperty(stack1,"actions") : stack1),{"name":"length","hash":{},"data":data,"loc":{"start":{"line":4,"column":82},"end":{"line":4,"column":103}}}),-5,{"name":"multiply","hash":{},"data":data,"loc":{"start":{"line":4,"column":70},"end":{"line":4,"column":109}}}))
     + " 0\">\n    <frame pos=\""
     + alias3((lookupProperty(helpers,"multiply")||(depth0 && lookupProperty(depth0,"multiply"))||alias2).call(alias1,(lookupProperty(helpers,"length")||(depth0 && lookupProperty(depth0,"length"))||alias2).call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"data") : depth0)) != null ? lookupProperty(stack1,"actions") : stack1),{"name":"length","hash":{},"data":data,"loc":{"start":{"line":5,"column":28},"end":{"line":5,"column":49}}}),5,{"name":"multiply","hash":{},"data":data,"loc":{"start":{"line":5,"column":16},"end":{"line":5,"column":54}}}))
-    + " 0\" size=\"5 5\">\n      <quad size=\"5 5\" bgcolor=\"222\" />\n      <label pos=\"2.6 -2.15\" text=\"\" halign=\"center\" valign=\"center\" textsize=\"2.5\" textcolor=\"DDD\" />\n    </frame>\n\n"
+    + " 0\" size=\"5 5\">\n      <quad size=\"5 5\" bgcolor=\"08080A\" />\n      <label pos=\"2.6 -2.15\" text=\"\" halign=\"center\" valign=\"center\" textsize=\"2.5\" textcolor=\"F4F4F5\" />\n    </frame>\n\n"
     + ((stack1 = lookupProperty(helpers,"each").call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"data") : depth0)) != null ? lookupProperty(stack1,"actions") : stack1),{"name":"each","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data,"loc":{"start":{"line":10,"column":4},"end":{"line":19,"column":13}}})) != null ? stack1 : "")
     + "\n    <quad class=\"trigger\" pos=\""
     + alias3((lookupProperty(helpers,"multiply")||(depth0 && lookupProperty(depth0,"multiply"))||alias2).call(alias1,(lookupProperty(helpers,"length")||(depth0 && lookupProperty(depth0,"length"))||alias2).call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"data") : depth0)) != null ? lookupProperty(stack1,"actions") : stack1),{"name":"length","hash":{},"data":data,"loc":{"start":{"line":21,"column":43},"end":{"line":21,"column":64}}}),5,{"name":"multiply","hash":{},"data":data,"loc":{"start":{"line":21,"column":31},"end":{"line":21,"column":69}}}))
@@ -43,7 +43,7 @@ templates['action-group'] = template({"1":function(container,depth0,helpers,part
 
   return "      <frame pos=\""
     + alias3((lookupProperty(helpers,"multiply")||(depth0 && lookupProperty(depth0,"multiply"))||alias2).call(alias1,(data && lookupProperty(data,"index")),5,{"name":"multiply","hash":{},"data":data,"loc":{"start":{"line":11,"column":18},"end":{"line":11,"column":41}}}))
-    + " 0\" size=\"5 5\">\n        <quad size=\"5 5\" bgcolor=\"DDD\" action=\""
+    + " 0\" size=\"5 5\">\n        <quad size=\"5 5\" bgcolor=\"16161A\" action=\""
     + alias3(container.lambda((depth0 != null ? lookupProperty(depth0,"action") : depth0), depth0))
     + "\" />\n"
     + ((stack1 = lookupProperty(helpers,"if").call(alias1,(lookupProperty(helpers,"eq")||(depth0 && lookupProperty(depth0,"eq"))||alias2).call(alias1,(depth0 != null ? lookupProperty(depth0,"type") : depth0),"image",{"name":"eq","hash":{},"data":data,"loc":{"start":{"line":13,"column":14},"end":{"line":13,"column":36}}}),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.program(6, data, 0),"data":data,"loc":{"start":{"line":13,"column":8},"end":{"line":17,"column":15}}})) != null ? stack1 : "")
@@ -69,7 +69,7 @@ templates['action-group'] = template({"1":function(container,depth0,helpers,part
 
   return "          <label pos=\"2.5 -2.1\" text=\""
     + container.escapeExpression(container.lambda((depth0 != null ? lookupProperty(depth0,"icon") : depth0), depth0))
-    + "\" halign=\"center\" valign=\"center\" textsize=\"2\" textcolor=\"222\" />\n";
+    + "\" halign=\"center\" valign=\"center\" textsize=\"2\" textcolor=\"F4F4F5\" />\n";
 },"8":function(container,depth0,helpers,partials,data) {
     return "declare Boolean actionGroupIsOpen = false for This;\n";
 },"10":function(container,depth0,helpers,partials,data) {
@@ -193,25 +193,25 @@ templates['window'] = template({"1":function(container,depth0,helpers,partials,d
     + "\" z-index=\"20\">\n  <quad pos=\"0 0\" size=\""
     + alias3(alias4(((stack1 = (depth0 != null ? lookupProperty(depth0,"size") : depth0)) != null ? lookupProperty(stack1,"x") : stack1), depth0))
     + " 5\" bgcolor=\""
-    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowHeaderBackground") : stack1),"222",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":4,"column":49},"end":{"line":4,"column":101}}}))
+    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowHeaderBackground") : stack1),"08080A",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":4,"column":49},"end":{"line":4,"column":104}}}))
     + "\" />\n  <label pos=\"1.5 -2.25\" text=\""
     + alias3(((helper = (helper = lookupProperty(helpers,"title") || (depth0 != null ? lookupProperty(depth0,"title") : depth0)) != null ? helper : alias2),(typeof helper === alias5 ? helper.call(alias1,{"name":"title","hash":{},"data":data,"loc":{"start":{"line":5,"column":31},"end":{"line":5,"column":42}}}) : helper)))
     + "\" size=\""
     + alias3((lookupProperty(helpers,"subtract")||(depth0 && lookupProperty(depth0,"subtract"))||alias2).call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"size") : depth0)) != null ? lookupProperty(stack1,"x") : stack1),9.5,{"name":"subtract","hash":{},"data":data,"loc":{"start":{"line":5,"column":50},"end":{"line":5,"column":75}}}))
     + " 5\" valign=\"center\" halign=\"left\" textsize=\"1\" textcolor=\""
-    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowHeaderText") : stack1),"FFF",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":5,"column":133},"end":{"line":5,"column":179}}}))
+    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowHeaderText") : stack1),"F4F4F5",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":5,"column":133},"end":{"line":5,"column":182}}}))
     + "\" textfont=\"GameFontSemiBold\" />\n  <label pos=\""
     + alias3((lookupProperty(helpers,"subtract")||(depth0 && lookupProperty(depth0,"subtract"))||alias2).call(alias1,((stack1 = (depth0 != null ? lookupProperty(depth0,"size") : depth0)) != null ? lookupProperty(stack1,"x") : stack1),1.5,{"name":"subtract","hash":{},"data":data,"loc":{"start":{"line":6,"column":14},"end":{"line":6,"column":39}}}))
     + " -2.25\" text=\"\" size=\"5 5\" valign=\"center\" halign=\"right\" textsize=\"1\" textcolor=\""
-    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowHeaderText") : stack1),"FFF",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":6,"column":122},"end":{"line":6,"column":168}}}))
+    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowHeaderText") : stack1),"F4F4F5",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":6,"column":122},"end":{"line":6,"column":171}}}))
     + "\" action=\"close-window-"
-    + alias3(((helper = (helper = lookupProperty(helpers,"id") || (depth0 != null ? lookupProperty(depth0,"id") : depth0)) != null ? helper : alias2),(typeof helper === alias5 ? helper.call(alias1,{"name":"id","hash":{},"data":data,"loc":{"start":{"line":6,"column":191},"end":{"line":6,"column":197}}}) : helper)))
+    + alias3(((helper = (helper = lookupProperty(helpers,"id") || (depth0 != null ? lookupProperty(depth0,"id") : depth0)) != null ? helper : alias2),(typeof helper === alias5 ? helper.call(alias1,{"name":"id","hash":{},"data":data,"loc":{"start":{"line":6,"column":194},"end":{"line":6,"column":200}}}) : helper)))
     + "\" focusareacolor2=\"fff0\" />\n\n  <quad pos=\"0 -5\" size=\""
     + alias3(alias4(((stack1 = (depth0 != null ? lookupProperty(depth0,"size") : depth0)) != null ? lookupProperty(stack1,"x") : stack1), depth0))
     + " "
     + alias3(alias4(((stack1 = (depth0 != null ? lookupProperty(depth0,"size") : depth0)) != null ? lookupProperty(stack1,"y") : stack1), depth0))
     + "\" bgcolor=\""
-    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowBackground") : stack1),"DDD",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":8,"column":61},"end":{"line":8,"column":107}}}))
+    + alias3((lookupProperty(helpers,"default")||(depth0 && lookupProperty(depth0,"default"))||alias2).call(alias1,((stack1 = ((stack1 = (depth0 != null ? lookupProperty(depth0,"ui") : depth0)) != null ? lookupProperty(stack1,"colors") : stack1)) != null ? lookupProperty(stack1,"windowBackground") : stack1),"0F0F12",{"name":"default","hash":{},"data":data,"loc":{"start":{"line":8,"column":61},"end":{"line":8,"column":110}}}))
     + "\" />\n  <frame pos=\"0 -5\" size=\""
     + alias3(alias4(((stack1 = (depth0 != null ? lookupProperty(depth0,"size") : depth0)) != null ? lookupProperty(stack1,"x") : stack1), depth0))
     + " "

@@ -104,7 +104,7 @@ Customize the in-game UI of every plugin from the **UI** button next to the plug
 
 The preview shows an approximation of the widget on the screen, drag it to change its position. Positions use manialink coordinates: `x` goes from `-160` (left) to `160` (right) and `y` from `90` (top) to `-90` (bottom), measured to the top left corner of the widget.
 
-Only the values that differ from the defaults are stored, so **Reset all** returns the plugin to its original look. With **Export** and **Import** you can copy a UI to another server, or apply the colors and fonts of one plugin to another plugin that uses the same settings.
+Only the values that differ from the defaults are stored, so **Reset all** returns the plugin to its default look. The defaults are the Benelux Pro League look ("Signal", as on beneluxtm.com): near-black panels, light text, blue highlights, Bebas titles and mono times. With **Export** and **Import** you can copy a UI to another server, or apply the colors and fonts of one plugin to another plugin that uses the same settings.
 
 <details>
 <summary>Making the UI of a plugin customizable</summary>

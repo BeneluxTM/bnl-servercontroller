@@ -71,8 +71,9 @@ export type PluginUiFields = Record<string, PluginUiField>;
 
 /**
  * Describes which parts of a plugin's in-game UI can be customized.
- * Every field default must match the look of the plugin's templates
- * before customization.
+ * The defaults are the BNL look ("Signal", as on beneluxtm.com): near-black
+ * panels, light text, grey rank and label columns, blue highlights,
+ * Bebas for titles and numbers and RajdhaniMono for times and labels.
  */
 export type PluginUiDefinition = {
   name: string;
