@@ -222,6 +222,39 @@ test("match lifecycle events, and nothing without a current match", async () => 
   assert.deepEqual((queued(redis)[1].data as { index: number }).index, 0);
 });
 
+test("pick/ban completes before the match has an id; sent right after match.started", async () => {
+  const { redis, manager, flush } = await setup();
+  manager.currentMatchId = null; // pick/ban always finishes before this exists
+  manager.emit("pickBanCompleted", [
+    { uid: "mapA", pickedBy: "Alice", bannedBy: "", index: 0 },
+    { uid: "mapB", pickedBy: "", bannedBy: "Bob", index: 0 },
+  ]);
+  await flush();
+  assert.equal(queued(redis).length, 0, "buffered, not sent without a match");
+
+  manager.currentMatchId = "ext-2";
+  manager.emit("beginMatch", {
+    mode: "m",
+    type: "reversecup",
+    maps: ["mapA"],
+    pointsLimit: 100,
+    players: {},
+  });
+  await flush();
+  assert.deepEqual(
+    queued(redis).map((e) => e.type),
+    ["match.started", "pickban.completed"],
+  );
+  const [, pickban] = queued(redis);
+  assert.equal(pickban.externalMatchId, "ext-2");
+  assert.deepEqual(pickban.data, {
+    maps: [
+      { mapUid: "mapA", outcome: "picked", by: "Alice", pickIndex: 0 },
+      { mapUid: "mapB", outcome: "banned", by: "Bob", pickIndex: null },
+    ],
+  });
+});
+
 test("delivery: batches, retries reuse the same eventIds, then drains", async () => {
   const { redis, manager, queue, posted, flush, setResponse, advance } =
     await setup();

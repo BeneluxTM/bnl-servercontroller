@@ -6,11 +6,12 @@ import type { WebhookQueue } from "./queue";
 import {
   mapEnded,
   matchEnded,
+  pickBanCompleted,
   roundEnded,
   snapshotPreEndRound,
   type PreEndRoundSnapshot,
 } from "./serialize";
-import type { WebhookEventType } from "./types";
+import type { PickBanCompletedData, WebhookEventType } from "./types";
 
 export const LISTENER_ID = "bnl-tournament-webhooks";
 
@@ -36,6 +37,10 @@ export function attachEmitter(
   const serverId = manager.getServerId();
   let pre: PreEndRoundSnapshot | null = null;
   let eliminatedThisMatch = new Set<string>();
+  // The pick/ban phase (and its "pickBanCompleted" emit from the match
+  // plugin) finishes before the new match's externalMatchId exists — hold
+  // it here and send it right after "match.started" gives us one.
+  let pendingPickBan: PickBanCompletedData | null = null;
 
   const live = () => manager.info.liveInfo;
   const isRoundBased = () => live().type !== "timeattack";
@@ -89,6 +94,17 @@ export function attachEmitter(
           name: p.name,
         })),
       });
+      if (pendingPickBan) {
+        emit("pickban.completed", pendingPickBan);
+        pendingPickBan = null;
+      }
+    },
+
+    // Fired by the `match` plugin (src/plugins/match/index.ts) once its
+    // pick/ban phase resolves — before this match has an externalMatchId,
+    // so buffer it rather than emit() it directly.
+    pickBanCompleted: (maps: Parameters<typeof pickBanCompleted>[0]) => {
+      pendingPickBan = pickBanCompleted(maps);
     },
 
     beginMap: (mapUid: string) => {

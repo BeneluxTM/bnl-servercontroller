@@ -330,6 +330,11 @@ Commands:
         return;
       }
 
+      // BNL tournament bridge (src/lib/tournament): buffered there until
+      // this match gets an externalMatchId, then sent as
+      // "pickban.completed".
+      this.clientManager.emit("pickBanCompleted", this.pickBanState.maps);
+
       try {
         await setMapList(this.clientManager, pickedMaps);
       } catch (error) {

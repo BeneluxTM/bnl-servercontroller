@@ -3,6 +3,7 @@ import type {
   EventPlayerRef,
   MapEndedData,
   MatchEndedData,
+  PickBanCompletedData,
   RoundEndedData,
   RoundPlayerResult,
 } from "./types";
@@ -104,6 +105,24 @@ export function matchEnded(scores: Scores): MatchEndedData {
       ...playerRef(p),
       rank: p.rank,
       matchPoints: p.matchpoints,
+    })),
+  };
+}
+
+/**
+ * The `match` plugin's own pick/ban result — deliberately duck-typed, not
+ * imported from src/plugins/match (which is server-only), so this stays a
+ * pure, independently-testable mapping like the rest of this file.
+ */
+export function pickBanCompleted(
+  maps: readonly { uid: string; pickedBy: string; bannedBy: string; index: number }[],
+): PickBanCompletedData {
+  return {
+    maps: maps.map((m) => ({
+      mapUid: m.uid,
+      outcome: m.pickedBy ? "picked" : "banned",
+      by: m.pickedBy || m.bannedBy || null,
+      pickIndex: m.pickedBy ? m.index : null,
     })),
   };
 }

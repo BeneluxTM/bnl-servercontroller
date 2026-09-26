@@ -14,7 +14,8 @@ export type WebhookEventType =
   | "round.ended"
   | "map.ended"
   | "player.eliminated"
-  | "match.ended";
+  | "match.ended"
+  | "pickban.completed";
 
 export interface WebhookEnvelope<T = unknown> {
   /** Generated once at emit time; reused on every retry (idempotency). */
@@ -80,4 +81,18 @@ export interface PlayerEliminatedData extends EventPlayerRef {
 
 export interface MatchEndedData {
   players: (EventPlayerRef & { rank: number; matchPoints: number })[];
+}
+
+export interface PickBanMapResult {
+  mapUid: string;
+  outcome: "picked" | "banned";
+  /** Display name of whoever picked/banned it; null if nobody did (auto,
+   * on a timeout). */
+  by: string | null;
+  /** 0-based play order for a picked map; null for a banned one. */
+  pickIndex: number | null;
+}
+
+export interface PickBanCompletedData {
+  maps: PickBanMapResult[];
 }
