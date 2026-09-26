@@ -1,11 +1,11 @@
 {{#extend "widget"}}
 {{#content "widget"}}
 <frame pos="0 0" id="map">
-  <quad pos="0 0" z-index="0" size="10 10" bgcolor="222"/>
-  <quad pos="10 0" z-index="0" size="45 10" bgcolor="DDD"/>
-  <label pos="5 -4.75" z-index="0" size="10 10" text="" halign="center" valign="center" textsize="2.5" textcolor="DDD" textfont="GameFontRegular"/>
-  <label pos="12 -5.25" z-index="0" size="41 5" text="-" textcolor="222" textsize="1.75" textfont="GameFontSemiBold" valign="bottom"/>
-  <label pos="11.75 -5.5" z-index="0" size="41 5" text="-" textcolor="222" textprefix="$i" textfont="GameFontRegular" valign="top" textsize="1"/>
+  <quad pos="0 0" z-index="0" size="{{ ui.layout.height }} {{ ui.layout.height }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+  <quad pos="{{ ui.layout.height }} 0" z-index="0" size="{{ subtract ui.layout.width ui.layout.height }} {{ ui.layout.height }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+  <label pos="{{ divide ui.layout.height 2 }} {{ labelY ui.layout.height }}" z-index="0" size="{{ ui.layout.height }} {{ ui.layout.height }}" text="" halign="center" valign="center" textsize="{{ ui.textSizes.icon }}" textcolor="{{ ui.colors.accentText }}" textfont="GameFontRegular"/>
+  <label pos="{{ add ui.layout.height 2 }} {{ subtract -0.25 (divide ui.layout.height 2) }}" z-index="0" size="{{ subtract ui.layout.width (add ui.layout.height 4) }} {{ divide ui.layout.height 2 }}" text="-" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.name }}" textfont="{{ ui.fonts.name }}" valign="bottom"/>
+  <label pos="{{ add ui.layout.height 1.75 }} {{ subtract -0.5 (divide ui.layout.height 2) }}" z-index="0" size="{{ subtract ui.layout.width (add ui.layout.height 4) }} {{ divide ui.layout.height 2 }}" text="-" textcolor="{{ ui.colors.authorText }}" textprefix="$i" textfont="{{ ui.fonts.author }}" valign="top" textsize="{{ ui.textSizes.author }}"/>
 </frame>
 {{/content}}
 

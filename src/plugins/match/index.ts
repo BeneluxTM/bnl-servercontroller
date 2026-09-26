@@ -100,7 +100,7 @@ Commands:
     this.widget = new Widget(manialinkManager);
     this.widget.setTemplate("widgets/match/pickban");
     this.widget.setId("match-pickban-widget");
-    this.widget.setPosition({ x: -60, y: 67 });
+    this.applyUi(this.widget);
   }
 
   async onLoad() {
@@ -142,6 +142,14 @@ Commands:
   }
 
   async onStart() {}
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
+    this.windows.forEach((window) => {
+      window.setTitle(this.getChoosePositionTitle());
+      this.applyUi(window, { refresh: true, layout: false });
+    });
+  }
 
   onMatchAction = async (
     data: PlayerManialinkPageAnswer,
@@ -648,6 +656,7 @@ Commands:
 
   private updatePickBan() {
     this.widget.setData({
+      pickBanAction: "match-pickban-action",
       mapInfosJson: JSON.stringify(this.pickBanState.maps),
       currentActionJson: this.pickBanState.currentAction
         ? JSON.stringify(this.pickBanState.currentAction)
@@ -1108,6 +1117,11 @@ Commands:
     }
   }
 
+  private getChoosePositionTitle(): string {
+    const title = this.ui.texts?.windowTitle;
+    return typeof title === "string" ? title : "Choose Position";
+  }
+
   private async createWindowForPlayer(login: string) {
     if (this.windows.has(login)) return;
 
@@ -1123,9 +1137,10 @@ Commands:
         nickName: "",
       },
       this.pickBanState.positionsAvailable,
-      "Choose Position",
+      this.getChoosePositionTitle(),
       login,
     );
+    this.applyUi(choosePositionWindow, { layout: false });
 
     choosePositionWindow.onCloseCallback = () => {
       this.windows.delete(login);

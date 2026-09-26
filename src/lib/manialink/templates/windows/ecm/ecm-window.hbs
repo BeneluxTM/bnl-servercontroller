@@ -2,49 +2,49 @@
 {{#content "window"}}
 <frame pos="2 -2" id="ecm-window" size="{{ subtract size.x 4 }} {{ subtract size.y 4 }}" hidden="1">
   <frame id="recording-status" size="{{ subtract size.x 4 }} 5">
-    <label text="" pos="0 -2.25" textcolor="{{#if data.isRecording}}2D2{{else}}D22{{/if}}" textsize="1" valign="center" />
-    <label text="{{#if data.isRecording}}Recording{{else}}Not Recording{{/if}}" pos="3.5 -2.25" size="20 5" textsize="1" textcolor="222" valign="center" textfont="GameFontRegular" />
+    <label text="" pos="0 -2.25" textcolor="{{#if data.isRecording}}{{ ui.colors.success }}{{else}}{{ ui.colors.error }}{{/if}}" textsize="{{ ui.textSizes.text }}" valign="center" />
+    <label text="{{#if data.isRecording}}Recording{{else}}Not Recording{{/if}}" pos="3.5 -2.25" size="20 5" textsize="{{ ui.textSizes.text }}" textcolor="{{ ui.colors.text }}" valign="center" textfont="{{ ui.fonts.text }}" />
 
     <frame id="toggle-recording" pos="25 0" size="25 5">
-      <quad pos="0 0" size="25 5" bgcolor="CCC" action="ecm-toggle-recording" />
-      <quad pos="0 -4.75" size="25 0.25" bgcolor="222" />
-      <label pos="12.5 -2.25" text="{{#if data.isRecording}}Stop{{else}}Start{{/if}} recording" textsize="1" textcolor="222" valign="center" halign="center" textfont="GameFontRegular" />
+      <quad pos="0 0" size="25 5" bgcolor="{{ ui.colors.buttonBackground }}" action="ecm-toggle-recording" />
+      <quad pos="0 -4.75" size="25 0.25" bgcolor="{{ ui.colors.buttonAccent }}" />
+      <label pos="12.5 -2.25" text="{{#if data.isRecording}}Stop{{else}}Start{{/if}} recording" textsize="{{ ui.textSizes.text }}" textcolor="{{ ui.colors.text }}" valign="center" halign="center" textfont="{{ ui.fonts.text }}" />
     </frame>
   </frame>
 
   <frame id="api-key-frame" pos="0 -6" size="{{ subtract size.x 4 }} 12.25">
-    <label text="API Key" pos="0 -2.25" size="25 3" textsize="0.6" textcolor="222" valign="center" textfont="GameFontSemiBold" />
+    <label text="API Key" pos="0 -2.25" size="25 3" textsize="{{ ui.textSizes.label }}" textcolor="{{ ui.colors.text }}" valign="center" textfont="{{ ui.fonts.label }}" />
     <frame id="input-frame" pos="0 -4.5" size="{{ subtract size.x 4 }} 7.75">
-      <quad pos="0 -4.75" size="37 0.25" bgcolor="222" />
-      <entry pos="0 -2.25" default="{{ data.apiKey }}" size="32 5" name="ecm-api-key-entry" id="ecm-api-key-entry" class="ecm-api-key-entry" textsize="1" focusareacolor1="CCC" focusareacolor2="CCC" textcolor="222" scriptevents="1" textformat="Password" valuetype="Ml_String" valign="center" textfont="GameFontRegular" />
-      <label pos="34.5 -2.25" size="5 5" text="" textcolor="222" focusareacolor1="CCC" focusareacolor2="CCC" halign="center" valign="center" textsize="1" scriptevents="1" class="ecm-api-key-entry-toggle" />
+      <quad pos="0 -4.75" size="37 0.25" bgcolor="{{ ui.colors.buttonAccent }}" />
+      <entry pos="0 -2.25" default="{{ data.apiKey }}" size="32 5" name="ecm-api-key-entry" id="ecm-api-key-entry" class="ecm-api-key-entry" textsize="{{ ui.textSizes.text }}" focusareacolor1="{{ ui.colors.buttonBackground }}" focusareacolor2="{{ ui.colors.buttonBackground }}" textcolor="{{ ui.colors.text }}" scriptevents="1" textformat="Password" valuetype="Ml_String" valign="center" textfont="{{ ui.fonts.text }}" />
+      <label pos="34.5 -2.25" size="5 5" text="" textcolor="{{ ui.colors.text }}" focusareacolor1="{{ ui.colors.buttonBackground }}" focusareacolor2="{{ ui.colors.buttonBackground }}" halign="center" valign="center" textsize="{{ ui.textSizes.text }}" scriptevents="1" class="ecm-api-key-entry-toggle" />
 
       <frame id="save-api-key" pos="38 0" size="12 5">
-        <quad pos="0 0" size="12 5" bgcolor="CCC" action="ecm-save-api-key" />
-        <quad pos="0 -4.75" size="12 0.25" bgcolor="222" />
-        <label pos="6 -2.25" text="Save" textsize="1" textcolor="222" valign="center" halign="center" textfont="GameFontRegular" />
+        <quad pos="0 0" size="12 5" bgcolor="{{ ui.colors.buttonBackground }}" action="ecm-save-api-key" />
+        <quad pos="0 -4.75" size="12 0.25" bgcolor="{{ ui.colors.buttonAccent }}" />
+        <label pos="6 -2.25" text="Save" textsize="{{ ui.textSizes.text }}" textcolor="{{ ui.colors.text }}" valign="center" halign="center" textfont="{{ ui.fonts.text }}" />
       </frame>
 
-      <label id="error-label" pos="0 -6.25" size="{{ subtract size.x 4 }} 3" textsize="0.6" textcolor="D22" valign="center" textfont="GameFontRegular" />
+      <label id="error-label" pos="0 -6.25" size="{{ subtract size.x 4 }} 3" textsize="{{ ui.textSizes.label }}" textcolor="{{ ui.colors.error }}" valign="center" textfont="{{ ui.fonts.text }}" />
     </frame>
   </frame>
 
   <frame id="round-info-frame" pos="0 -19" size="{{ subtract size.x 4 }} 9.5">
-    <label text="Round info" pos="0 -2.25" size="25 3" textsize="0.6" textcolor="222" valign="center" textfont="GameFontSemiBold" />
+    <label text="Round info" pos="0 -2.25" size="25 3" textsize="{{ ui.textSizes.label }}" textcolor="{{ ui.colors.text }}" valign="center" textfont="{{ ui.fonts.label }}" />
     <frame id="round-info" pos="0 -4.5" size="{{ subtract size.x 4 }} 5">
-      <label text="Round {{ data.currentRound }}" pos="0 -2.25" size="12 5" textsize="1" textcolor="222" valign="center" textfont="GameFontRegular" />
+      <label text="Round {{ data.currentRound }}" pos="0 -2.25" size="12 5" textsize="{{ ui.textSizes.text }}" textcolor="{{ ui.colors.text }}" valign="center" textfont="{{ ui.fonts.text }}" />
 
       <frame id="round-controls">
         <frame id="decrease-round-offset" pos="14 0" size="5 5">
-          <quad pos="0 0" size="5 5" bgcolor="CCC" action="ecm-decrease-round-offset" />
-          <quad pos="0 -4.75" size="5 0.25" bgcolor="222" />
-          <label pos="2.5 -2.25" text="-" textsize="1" textcolor="222" valign="center" halign="center" textfont="GameFontRegular" />
+          <quad pos="0 0" size="5 5" bgcolor="{{ ui.colors.buttonBackground }}" action="ecm-decrease-round-offset" />
+          <quad pos="0 -4.75" size="5 0.25" bgcolor="{{ ui.colors.buttonAccent }}" />
+          <label pos="2.5 -2.25" text="-" textsize="{{ ui.textSizes.text }}" textcolor="{{ ui.colors.text }}" valign="center" halign="center" textfont="{{ ui.fonts.text }}" />
         </frame>
 
         <frame id="increase-round-offset" pos="20 0" size="5 5">
-          <quad pos="0 0" size="5 5" bgcolor="CCC" action="ecm-increase-round-offset" />
-          <quad pos="0 -4.75" size="5 0.25" bgcolor="222" />
-          <label pos="2.5 -2.25" text="+" textsize="1" textcolor="222" valign="center" halign="center" textfont="GameFontRegular" />
+          <quad pos="0 0" size="5 5" bgcolor="{{ ui.colors.buttonBackground }}" action="ecm-increase-round-offset" />
+          <quad pos="0 -4.75" size="5 0.25" bgcolor="{{ ui.colors.buttonAccent }}" />
+          <label pos="2.5 -2.25" text="+" textsize="{{ ui.textSizes.text }}" textcolor="{{ ui.colors.text }}" valign="center" halign="center" textfont="{{ ui.fonts.text }}" />
         </frame>
       </frame>
     </frame>
@@ -84,15 +84,12 @@ Void updateRecording(Boolean isRecording) {
   declare labelText <=> statusFrame.Controls[1] as CMlLabel;
   declare toggleRecordingLabel <=> toggleRecordingFrame.Controls[2] as CMlLabel;
 
-  declare Real low = 2./16.;
-  declare Real high = 14./16.;
-
   if (isRecording) {
-    recordingStatusLabel.TextColor = <low,high,low>;
+    recordingStatusLabel.TextColor = {{ vec3 ui.colors.success }};
     labelText.SetText("Recording");
     toggleRecordingLabel.SetText("Stop recording");
   } else {
-    recordingStatusLabel.TextColor = <high,low,low>;
+    recordingStatusLabel.TextColor = {{ vec3 ui.colors.error }};
     labelText.SetText("Not Recording");
     toggleRecordingLabel.SetText("Start recording");
   }

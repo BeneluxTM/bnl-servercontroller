@@ -260,6 +260,7 @@ model ServerPlugins {
   pluginId String
   enabled  Boolean
   config   Json?
+  ui       Json?
 
   server Servers @relation(fields: [serverId], references: [id], onDelete: Cascade)
   plugin Plugins @relation(fields: [pluginId], references: [id], onDelete: Cascade)

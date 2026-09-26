@@ -1,11 +1,11 @@
 {{#extend "widget"}}
 {{#content "widget"}}
 <frame pos="0 0" id="notify-admin">
-  <quad pos="0 0" z-index="0" size="36 8" bgcolor="DDD"/>
-  <quad pos="0 -8" z-index="0" size="36 0.5" bgcolor="222"/>
-  <label pos="18 -3.75" z-index="0" size="36 8" text="Notify Admin" halign="center" valign="center" textsize="2" textcolor="222" textfont="GameFontSemiBold"/>
+  <quad pos="0 0" z-index="0" size="{{ ui.layout.width }} {{ ui.layout.height }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+  <quad pos="0 {{ neg ui.layout.height }}" z-index="0" size="{{ ui.layout.width }} 0.5" bgcolor="{{ ui.colors.accentBackground }}"/>
+  <label pos="{{ divide ui.layout.width 2 }} {{ labelY ui.layout.height }}" z-index="0" size="{{ ui.layout.width }} {{ ui.layout.height }}" text="{{ ui.texts.label }}" halign="center" valign="center" textsize="{{ ui.textSizes.label }}" textcolor="{{ ui.colors.rowText }}" textfont="{{ ui.fonts.label }}"/>
 
-  <quad pos="0 0" size="36 8.5" z-index="-2" scriptevents="1" bgcolor="fff" opacity="0" action="{{ data.notifyAdminAction }}" />
+  <quad pos="0 0" size="{{ ui.layout.width }} {{ add ui.layout.height 0.5 }}" z-index="-2" scriptevents="1" bgcolor="fff" opacity="0" action="{{ data.notifyAdminAction }}" />
 </frame>
 {{/content}}
 {{/extend}}

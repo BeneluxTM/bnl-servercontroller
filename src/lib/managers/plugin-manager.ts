@@ -81,6 +81,7 @@ export default class PluginManager {
 
       if (!clientPlugin.enabled) continue;
 
+      plugin.setUiConfig(clientPlugin.ui);
       plugin.setConfig(clientPlugin.config);
       await plugin.onLoad();
       plugin.setLoaded(true);
@@ -143,6 +144,7 @@ export default class PluginManager {
     );
 
     if (!plugin.isLoaded()) {
+      plugin.setUiConfig(clientPlugin?.ui ?? null);
       plugin.setConfig(clientPlugin?.config || null);
       plugin.setDbPluginId(clientPlugin?.plugin.id || "");
       await plugin.onLoad();
@@ -200,6 +202,7 @@ export default class PluginManager {
 
       // If plugin should be loaded but isn't, load it
       if (shouldBeLoaded && !plugin.isLoaded()) {
+        plugin.setUiConfig(clientPlugin.ui);
         plugin.setConfig(clientPlugin.config);
         plugin.setDbPluginId(clientPlugin.plugin.id);
         await plugin.onLoad();
@@ -214,6 +217,7 @@ export default class PluginManager {
 
       // If plugin is loaded and config has changed, update it
       else if (shouldBeLoaded && plugin.isLoaded() && updateConfigs) {
+        plugin.setUiConfig(clientPlugin.ui);
         plugin.setConfig(clientPlugin.config);
         plugin.setDbPluginId(clientPlugin.plugin.id);
       }
@@ -287,6 +291,7 @@ export default class PluginManager {
       if (plugin.getSupportedGamemodes().length <= 0) continue;
 
       if (plugin.getSupportedGamemodes().includes(mode) && !plugin.isLoaded()) {
+        plugin.setUiConfig(clientPlugin.ui);
         plugin.setConfig(clientPlugin.config);
         plugin.setDbPluginId(clientPlugin.plugin.id);
         await plugin.onLoad();

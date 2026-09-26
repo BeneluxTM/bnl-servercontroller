@@ -4,6 +4,9 @@ import { doServerActionWithAuth } from "@/lib/actions";
 import { getClient } from "@/lib/dbclient";
 import { getLogger } from "@/lib/logger";
 import { getGbxClientManager } from "@/lib/managers/gbxclient-manager";
+import { createPluginUiSchema, getPluginUiOverrides } from "@/lib/plugin-ui";
+import { getPluginUiDefinition } from "@/plugins/ui";
+import { PluginUiValues } from "@/types/plugins/ui";
 import { ServerError, ServerResponse } from "@/types/responses";
 import { logAudit } from "./server-only/audit-logs";
 import { ServerPluginsWithPlugin } from "./server-only/gbx";
@@ -123,6 +126,91 @@ export async function updateServerPlugin(
         "server.plugins.plugins.config.edit",
         { pluginId, config },
       );
+    },
+  );
+}
+
+/**
+ * Saves the customized in-game UI of a plugin. Only the values that differ from the
+ * plugin's defaults are stored. Returns the stored values.
+ */
+export async function updateServerPluginUi(
+  serverId: string,
+  pluginId: string,
+  ui: PluginUiValues,
+): Promise<ServerResponse<PluginUiValues>> {
+  return doServerActionWithAuth(
+    [`servers:${serverId}:admin`, `group:servers:${serverId}:admin`],
+    async (session) => {
+      const db = getClient();
+
+      const plugin = await db.plugins.findUnique({
+        where: { id: pluginId },
+      });
+      if (!plugin) {
+        throw new ServerError("Plugin not found", "PluginNotFound");
+      }
+
+      const definition = getPluginUiDefinition(plugin.name);
+      if (!definition) {
+        throw new ServerError(
+          `The ${plugin.name} plugin has no customizable UI`,
+          "PluginUiNotSupported",
+        );
+      }
+
+      const result = createPluginUiSchema(definition)
+        .deepPartial()
+        .safeParse(ui);
+      if (!result.success) {
+        throw new ServerError(
+          `Invalid UI settings: ${result.error.issues
+            .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+            .join(", ")}`,
+          "InvalidPluginUi",
+        );
+      }
+
+      const overrides = getPluginUiOverrides(definition, result.data);
+
+      await db.serverPlugins.upsert({
+        where: {
+          serverId_pluginId: {
+            serverId,
+            pluginId,
+          },
+        },
+        create: {
+          serverId,
+          pluginId,
+          enabled: false,
+          ui: overrides,
+        },
+        update: {
+          ui: overrides,
+        },
+      });
+
+      const manager = await getGbxClientManager(serverId);
+
+      const updatedPlugins = await db.serverPlugins.findMany({
+        where: { serverId },
+        include: {
+          plugin: true,
+        },
+      });
+
+      manager.info.plugins = updatedPlugins;
+      manager.pluginManager.updatePlugins();
+
+      await logAudit(
+        session.user.id,
+        serverId,
+        "server.plugins.plugins.ui.edit",
+        { pluginId, ui: overrides },
+      );
+
+      return overrides;
     },
   );
 }

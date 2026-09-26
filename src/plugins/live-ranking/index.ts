@@ -35,7 +35,7 @@ export default class LiveRankingPlugin extends Plugin {
     this.widget = new Widget(manialinkManager);
     this.widget.setTemplate("widgets/live-ranking/live-ranking");
     this.widget.setId("live-ranking-widget");
-    this.widget.setPosition({ x: 100, y: 55 });
+    this.applyUi(this.widget);
   }
 
   async onLoad() {
@@ -58,6 +58,10 @@ export default class LiveRankingPlugin extends Plugin {
   async onStart() {
     this.widget.display();
     this.clearRankings();
+  }
+
+  async onUiConfigUpdate() {
+    this.applyUi(this.widget, { refresh: true });
   }
 
   async onPlayerConnect(playerInfo: PlayerInfo) {

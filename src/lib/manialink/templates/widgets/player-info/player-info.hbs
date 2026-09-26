@@ -2,39 +2,39 @@
 {{#content "widget"}}
 <frame pos="0 0" id="player-info-container" hidden="1">
   <frame pos="0 0" id="player-name">
-    <quad pos="0 0" z-index="0" size="7 7" bgcolor="222"/>
-    <quad pos="7 0" z-index="0" size="48 7" bgcolor="DDD"/>
-    <quad pos="3.5 -3.5" z-index="0" size="4.5 3" bgcolor="222" image="file://Media/Flags/WOR.dds" halign="center" valign="center" />
-    <label pos="8.5 -3.25" z-index="0" size="47 7" text="" valign="center" textcolor="222" textsize="2" textfont="GameFontSemiBold"/>
+    <quad pos="0 0" z-index="0" size="{{ ui.spacing.nameHeight }} {{ ui.spacing.nameHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+    <quad pos="{{ ui.spacing.nameHeight }} 0" z-index="0" size="{{ subtract ui.layout.width ui.spacing.nameHeight }} {{ ui.spacing.nameHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+    <quad pos="{{ divide ui.spacing.nameHeight 2 }} {{ neg (divide ui.spacing.nameHeight 2) }}" z-index="0" size="4.5 3" bgcolor="{{ ui.colors.accentBackground }}" image="file://Media/Flags/WOR.dds" halign="center" valign="center" />
+    <label pos="{{ add ui.spacing.nameHeight 1.5 }} {{ labelY ui.spacing.nameHeight }}" z-index="0" size="{{ subtract ui.layout.width (add ui.spacing.nameHeight 1) }} {{ ui.spacing.nameHeight }}" text="" valign="center" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.name }}" textfont="{{ ui.fonts.name }}"/>
   </frame>
 
-  <frame pos="0 -8" id="player-info-title">
-    <quad pos="0 0" z-index="0" size="55 5" bgcolor="222"/>
-    <label pos="27.5 -2.25" z-index="0" size="55 5" text="Player Info" halign="center" textsize="1" textfont="GameFontSemiBold" valign="center"/>
+  <frame pos="0 {{ neg (add ui.spacing.nameHeight ui.spacing.sectionGap) }}" id="player-info-title">
+    <quad pos="0 0" z-index="0" size="{{ ui.layout.width }} {{ ui.spacing.headerHeight }}" bgcolor="{{ ui.colors.headerBackground }}" opacity="{{ ui.colors.headerOpacity }}"/>
+    <label pos="{{ divide ui.layout.width 2 }} {{ labelY ui.spacing.headerHeight }}" z-index="0" size="{{ ui.layout.width }} {{ ui.spacing.headerHeight }}" text="{{ ui.texts.title }}" halign="center" textsize="{{ ui.textSizes.title }}" textcolor="{{ ui.colors.headerText }}" textfont="{{ ui.fonts.title }}" valign="center"/>
   </frame>
 
-  <frame pos="0 -13.25" id="records-info">
-    <quad pos="0 0" z-index="0" size="8 8" bgcolor="222"/>
-    <quad pos="8 0" z-index="0" size="19.5 8" bgcolor="DDD"/>
-    <label pos="4 -3.75" z-index="0" size="8 8" text="PB" halign="center" valign="center" textsize="1.5" textcolor="DDD" textfont="GameFontBlack"/>
-    <label pos="17.75 -3.75" z-index="0" size="15.5 8" text="--:--.---" valign="center" halign="center" textcolor="222" textsize="1.5" textfont="GameFontSemiBold"/>
+  <frame pos="0 {{ neg (add ui.spacing.nameHeight ui.spacing.sectionGap ui.spacing.headerHeight ui.spacing.rowGap) }}" id="records-info">
+    <quad pos="0 0" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+    <quad pos="{{ ui.spacing.rowHeight }} 0" z-index="0" size="{{ subtract (divide ui.layout.width 2) ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+    <label pos="{{ divide ui.spacing.rowHeight 2 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" text="PB" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" textfont="{{ ui.fonts.accent }}"/>
+    <label pos="{{ divide (add (divide ui.layout.width 2) ui.spacing.rowHeight) 2 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ subtract (divide ui.layout.width 2) (add ui.spacing.rowHeight 4) }} {{ ui.spacing.rowHeight }}" text="--:--.---" valign="center" halign="center" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.value }}" textfont="{{ ui.fonts.value }}"/>
 
-    <quad pos="27.5 0" z-index="0" size="8 8" bgcolor="222"/>
-    <quad pos="35.5 0" z-index="0" size="19.5 8" bgcolor="DDD"/>
-    <label pos="31.5 -3.75" z-index="0" size="8 8" text="LR" halign="center" valign="center" textsize="1.5" textcolor="DDD" textfont="GameFontBlack"/>
-    <label pos="45.25 -3.75" z-index="0" size="15.5 8" text="--:--.---" valign="center" halign="center" textcolor="222" textsize="1.5" textfont="GameFontSemiBold"/>
+    <quad pos="{{ divide ui.layout.width 2 }} 0" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+    <quad pos="{{ add (divide ui.layout.width 2) ui.spacing.rowHeight }} 0" z-index="0" size="{{ subtract (divide ui.layout.width 2) ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+    <label pos="{{ add (divide ui.layout.width 2) (divide ui.spacing.rowHeight 2) }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" text="LR" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" textfont="{{ ui.fonts.accent }}"/>
+    <label pos="{{ add (divide ui.layout.width 2) (divide (add (divide ui.layout.width 2) ui.spacing.rowHeight) 2) }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ subtract (divide ui.layout.width 2) (add ui.spacing.rowHeight 4) }} {{ ui.spacing.rowHeight }}" text="--:--.---" valign="center" halign="center" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.value }}" textfont="{{ ui.fonts.value }}"/>
   </frame>
 
-  <frame pos="0 -21.5" id="other-info">
-    <quad pos="0 0" z-index="0" size="8 8" bgcolor="222"/>
-    <quad pos="8 0" z-index="0" size="19.5 8" bgcolor="DDD"/>
-    <label pos="4 -3.75" z-index="0" size="8 8" text="" halign="center" valign="center" textsize="1.5" textcolor="DDD" textfont="GameFontBlack"/>
-    <label pos="17.75 -3.75" z-index="0" size="15.5 8" text="" valign="center" halign="center" textcolor="222" textsize="1.5" textfont="GameFontSemiBold"/>
+  <frame pos="0 {{ neg (add ui.spacing.nameHeight ui.spacing.sectionGap ui.spacing.headerHeight ui.spacing.rowGap ui.spacing.rowHeight ui.spacing.rowGap) }}" id="other-info">
+    <quad pos="0 0" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+    <quad pos="{{ ui.spacing.rowHeight }} 0" z-index="0" size="{{ subtract (divide ui.layout.width 2) ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+    <label pos="{{ divide ui.spacing.rowHeight 2 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" text="" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" textfont="GameFontBlack"/>
+    <label pos="{{ divide (add (divide ui.layout.width 2) ui.spacing.rowHeight) 2 }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ subtract (divide ui.layout.width 2) (add ui.spacing.rowHeight 4) }} {{ ui.spacing.rowHeight }}" text="" valign="center" halign="center" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.value }}" textfont="{{ ui.fonts.value }}"/>
 
-    <quad pos="27.5 0" z-index="0" size="8 8" bgcolor="222"/>
-    <quad pos="35.5 0" z-index="0" size="19.5 8" bgcolor="DDD"/>
-    <label pos="31.5 -3.75" z-index="0" size="8 8" text="" halign="center" valign="center" textsize="1.5" textcolor="DDD" textfont="GameFontBlack"/>
-    <label pos="45.25 -3.75" z-index="0" size="15.5 8" text="" valign="center" halign="center" textcolor="222" textsize="1.5" textfont="GameFontSemiBold"/>
+    <quad pos="{{ divide ui.layout.width 2 }} 0" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.accentBackground }}" opacity="{{ ui.colors.accentOpacity }}"/>
+    <quad pos="{{ add (divide ui.layout.width 2) ui.spacing.rowHeight }} 0" z-index="0" size="{{ subtract (divide ui.layout.width 2) ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" bgcolor="{{ ui.colors.rowBackground }}" opacity="{{ ui.colors.rowOpacity }}"/>
+    <label pos="{{ add (divide ui.layout.width 2) (divide ui.spacing.rowHeight 2) }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ ui.spacing.rowHeight }} {{ ui.spacing.rowHeight }}" text="" halign="center" valign="center" textsize="{{ ui.textSizes.accent }}" textcolor="{{ ui.colors.accentText }}" textfont="GameFontBlack"/>
+    <label pos="{{ add (divide ui.layout.width 2) (divide (add (divide ui.layout.width 2) ui.spacing.rowHeight) 2) }} {{ labelY ui.spacing.rowHeight }}" z-index="0" size="{{ subtract (divide ui.layout.width 2) (add ui.spacing.rowHeight 4) }} {{ ui.spacing.rowHeight }}" text="" valign="center" halign="center" textcolor="{{ ui.colors.rowText }}" textsize="{{ ui.textSizes.value }}" textfont="{{ ui.fonts.value }}"/>
   </frame>
 </frame>
 {{/content}}

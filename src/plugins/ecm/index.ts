@@ -79,6 +79,12 @@ Commands:
     });
   }
 
+  async onUiConfigUpdate() {
+    this.windows.forEach((window) => {
+      this.applyUi(window, { refresh: true, layout: false });
+    });
+  }
+
   async onStartRound() {
     this.activeDrivers.clear();
     const meta = {
@@ -212,6 +218,7 @@ Commands:
     };
     ecmWindow.onRoundOffsetUpdateCallback = this.onRoundOffsetUpdate;
     ecmWindow.onConfigUpdateCallback = this.onUserConfigUpdate;
+    this.applyUi(ecmWindow, { layout: false });
 
     this.windows.set(login, ecmWindow);
     ecmWindow.display();
