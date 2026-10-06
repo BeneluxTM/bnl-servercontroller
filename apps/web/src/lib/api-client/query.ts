@@ -14,6 +14,7 @@ export async function unwrap<T>(
 
 // One place for the cache keys, so a write can invalidate the reads it affects
 export const queryKeys = {
+  tournamentMatches: ["tournament", "matches"] as const,
   server: (serverId: string) => ["servers", serverId] as const,
   banlist: (serverId: string) => ["servers", serverId, "banlist"] as const,
   blacklist: (serverId: string) => ["servers", serverId, "blacklist"] as const,

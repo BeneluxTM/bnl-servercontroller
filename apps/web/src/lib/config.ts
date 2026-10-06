@@ -34,8 +34,18 @@ const config: Config = {
     TOKEN: process.env.GBX_SERVICE_TOKEN || "",
     WS_TICKET_SECRET: process.env.WS_TICKET_SECRET || "",
   },
+  TOURNAMENT: {
+    URL:
+      process.env.TOURNAMENT_API_URL ||
+      (process.env.TOURNAMENT_WEBHOOK_URL || "").replace(
+        /\/api\/v1\/ingest\/events\/?$/,
+        "",
+      ),
+    API_KEY: process.env.TOURNAMENT_API_KEY || "",
+  },
   MARKETPLACE: {
-    INDEX_URL: process.env.MARKETPLACE_INDEX_URL ?? DEFAULT_MARKETPLACE_INDEX_URL,
+    INDEX_URL:
+      process.env.MARKETPLACE_INDEX_URL ?? DEFAULT_MARKETPLACE_INDEX_URL,
   },
 };
 
