@@ -187,6 +187,11 @@ export default function TournamentMatchList() {
     },
     { accessorKey: "stage", header: "Stage" },
     {
+      accessorKey: "matchDay",
+      header: "Round",
+      cell: ({ row }) => row.original.matchDay ?? "—",
+    },
+    {
       accessorKey: "scheduledAt",
       header: "Scheduled",
       cell: ({ row }) =>

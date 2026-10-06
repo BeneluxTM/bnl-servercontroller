@@ -3,6 +3,7 @@ export const tournamentMatchSchema = z.object({
   id: z.string().uuid(),
   label: z.string().nullable(),
   stage: z.string(),
+  matchDay: z.number().int().nullable(),
   scheduledAt: z.string().nullable(),
   serverId: z.string().nullable(),
   season: z.object({ id: z.string(), name: z.string() }),
