@@ -3,7 +3,7 @@
   "version": "0.12.0-beta",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack | pino-pretty",
+    "dev": "next dev --webpack --port ${PORT:-3002} | pino-pretty",
     "build": "next build --webpack",
     "start": "cp -r .next/static .next/standalone/apps/web/.next/static && cp -r public .next/standalone/apps/web/public && cp -r hetzner .next/standalone/apps/web/hetzner/ && node .next/standalone/apps/web/server.js | pino-pretty",
     "lint": "next lint",

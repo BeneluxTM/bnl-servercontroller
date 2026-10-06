@@ -301,6 +301,7 @@ model ServerPlugins {
   pluginId            String
   enabled             Boolean
   config              Json?
+  ui                  Json?
   // Installed version of a marketplace or uploaded plugin; null for built-ins
   versionId           String?
   // Capabilities the admin consented to when installing or updating

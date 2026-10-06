@@ -6,7 +6,7 @@ GoControlPanel manages dedicated Trackmania servers: server and game settings, m
 
 This is a Bun workspace with TypeScript throughout. Run workspace commands from the repository root. Keep web-specific conventions in `apps/web/AGENTS.md`.
 
-- `apps/web` (`@gcp/web`): Next.js App Router and React web panel, authentication, database access, HTTP APIs, Server Actions, and external integrations. Default port 3000.
+- `apps/web` (`@gcp/web`): Next.js App Router and React web panel, authentication, database access, HTTP APIs, Server Actions, and external integrations. Default port 3002.
 - `apps/gbx-service` (`@gcp/gbx-service`): dedicated-server connections, game callbacks, live WebSockets, match recording, and sandboxed plugin execution. Default port 3100. Changes to game connection or callback behavior belong here.
 - `packages/db` (`@gcp/db`): shared Prisma client, schemas, and migrations for MySQL/MariaDB and PostgreSQL.
 - `packages/shared` (`@gcp/shared`): shared transport contracts, plugin manifest/config validation, and utilities used across processes.

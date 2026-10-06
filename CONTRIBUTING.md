@@ -17,7 +17,7 @@ The repository is a Bun workspaces monorepo:
 - [Bun](https://bun.sh) and Node.js 22 or newer
 - Docker with Compose v2 (tested with 2.39)
 - A Trackmania account with two things set up:
-  - an OAuth app at the [Nadeo API manager](https://api.trackmania.com/manager), with `http://localhost:3000/api/auth/callback/nadeo` as redirect URL
+  - an OAuth app at the [Nadeo API manager](https://api.trackmania.com/manager), with `http://localhost:3002/api/auth/callback/nadeo` as redirect URL
   - a dedicated server account from the [dedicated server manager](https://www.trackmania.com/player/dedicated-servers)
 
 ### First start
@@ -27,7 +27,7 @@ cp .env.example .env     # then fill in the values marked below
 bun run infra:up         # Redis + MariaDB
 bun run setup            # installs dependencies and applies the database migrations
 bun run dev:gbx          # GBX service on http://localhost:3100
-bun run dev              # web app on http://localhost:3000 (in a second terminal)
+bun run dev              # web app on http://localhost:3002 (in a second terminal)
 ```
 
 These `.env` values have no usable default:
@@ -84,7 +84,7 @@ Schema changes have to be made for both databases (`packages/db/prisma/mysql` an
 
 | Port | What |
 |---|---|
-| 3000 | web app |
+| 3002 | web app |
 | 3100 | GBX service |
 | 3306 / 5432 / 6379 | MariaDB / PostgreSQL / Redis (localhost only) |
 | 2351 | game port of the dedicated server |

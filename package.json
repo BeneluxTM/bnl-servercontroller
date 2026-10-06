@@ -13,6 +13,7 @@
     "infra:up": "docker compose --env-file .env -f dev/docker-compose.yml up -d --wait redis mariadb",
     "infra:up:postgres": "docker compose --env-file .env -f dev/docker-compose.yml up -d --wait redis postgres",
     "infra:dedicated": "docker compose --env-file .env -f dev/docker-compose.yml up -d dedicated filemanager",
+    "infra:logs": "docker compose --env-file .env -f dev/docker-compose.yml logs -f dedicated filemanager",
     "infra:down": "docker compose --env-file .env -f dev/docker-compose.yml --profile \"*\" down",
     "build": "bun --env-file=.env run --filter '*' build",
     "test": "bun --env-file=.env run --filter '*' test",
