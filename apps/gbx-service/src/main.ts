@@ -28,6 +28,11 @@ async function main() {
     serviceToken: config.GBX_SERVICE_TOKEN,
     tickets: container.tickets,
     allowedOrigins: config.WS_ALLOWED_ORIGINS,
+    tournament: {
+      apiKey: config.TOURNAMENT_API_KEY,
+      db: container.db,
+      queue: container.tournamentQueue,
+    },
   });
 
   const unsubscribe = await subscribeToLifecycleEvents(

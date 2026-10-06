@@ -33,6 +33,7 @@ import { createRedis } from "./infra/redis/redis";
 import { loadSandboxAssets } from "./infra/sandbox-assets";
 import { loadTemplateSources } from "./infra/templates";
 import { TicketVerifier } from "./http/ws/ticket-verifier";
+import { startTournamentBridge } from "./tournament/bridge";
 
 // Composition root: the only place that picks concrete implementations
 export async function createContainer(config: Config) {
@@ -111,10 +112,23 @@ export async function createContainer(config: Config) {
         })
       : null;
 
+  // Attaches to servers as the registry creates them, so it starts before them
+  const tournament = startTournamentBridge({
+    registry,
+    redis,
+    config: {
+      webhookUrl: config.TOURNAMENT_WEBHOOK_URL,
+      webhookSecret: config.TOURNAMENT_WEBHOOK_SECRET,
+    },
+    log,
+  });
+
   return {
     log,
     registry,
     marketplace,
+    db,
+    tournamentQueue: tournament?.queue ?? null,
     installFirstPartyPlugins: async () =>
       installFirstPartyPlugins(
         await loadFirstPartyPackages(config.MARKETPLACE_INDEX_URL, log),
@@ -125,6 +139,7 @@ export async function createContainer(config: Config) {
     subscriber,
     async close() {
       marketplace?.stop();
+      tournament?.stop();
       await registry.shutdown();
       subscriber.disconnect();
       redis.disconnect();

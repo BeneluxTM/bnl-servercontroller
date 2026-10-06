@@ -36,6 +36,11 @@ const envSchema = z.object({
   // Plugin marketplace index, checked for withdrawn (yanked) versions; empty turns that off
   MARKETPLACE_INDEX_URL: z.union([z.literal(""), z.string().url()]).default(DEFAULT_MARKETPLACE_INDEX_URL),
   MARKETPLACE_CHECK_MINUTES: z.coerce.number().int().min(0).default(30),
+  // BNL tournament bridge. Webhooks are off while the URL or secret is empty; the API key
+  // guards /api/tournament/*, which stays closed while it is empty.
+  TOURNAMENT_WEBHOOK_URL: z.union([z.literal(""), z.string().url()]).default(""),
+  TOURNAMENT_WEBHOOK_SECRET: z.string().default(""),
+  TOURNAMENT_API_KEY: z.string().default(""),
   SENTRY_DSN: z.string().optional(),
   SENTRY_ENVIRONMENT: z.string().optional(),
   TEMPLATES_DIR: z.string().optional(),

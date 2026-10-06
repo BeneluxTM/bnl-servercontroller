@@ -1,9 +1,12 @@
 import websocket from "@fastify/websocket";
 import Fastify, { LogController, type FastifyBaseLogger, type FastifyInstance } from "fastify";
+import type { DbClient } from "@gcp/db";
 import type { Logger } from "../core/logger";
 import type { ServerRegistry } from "../core/server/server-registry";
 import { errorHandler } from "./errors";
 import { internalRoutes } from "./routes/internal";
+import { tournamentRoutes } from "../tournament/routes";
+import type { WebhookQueue } from "../tournament/queue";
 import type { TicketVerifier } from "./ws/ticket-verifier";
 import { wsRoutes } from "./ws/ws-routes";
 
@@ -14,6 +17,8 @@ export interface AppOptions {
   tickets: TicketVerifier;
   allowedOrigins?: string[];
   heartbeatMs?: number;
+  // BNL tournament endpoints; registered only when an API key is set
+  tournament?: { apiKey: string; db: DbClient; queue: WebhookQueue | null };
 }
 
 // Builds the HTTP/WS app without listening, so tests can inject requests or bind port 0
@@ -50,6 +55,9 @@ export async function buildApp(options: AppOptions): Promise<FastifyInstance> {
     registry: options.registry,
     serviceToken: options.serviceToken,
   });
+  if (options.tournament?.apiKey) {
+    await app.register(tournamentRoutes, { registry: options.registry, ...options.tournament });
+  }
   await app.register(wsRoutes, {
     registry: options.registry,
     tickets: options.tickets,
