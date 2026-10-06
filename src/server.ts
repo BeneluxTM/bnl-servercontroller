@@ -12,7 +12,8 @@ const webSocketServer = new WebSocketServer({ noServer: true });
 setWebSocketServer(webSocketServer);
 
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev, customServer: true });
+const port = Number(process.env.PORT || 3000);
+const app = next({ dev, customServer: true, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
@@ -21,11 +22,11 @@ app.prepare().then(() => {
       const parsedUrl = parse(req.url!, true);
       await handle(req, res, parsedUrl);
     })
-    .listen(3000, () => {
+    .listen(port, () => {
       const meta = {
         type: "server",
         module: "startup",
       };
-      logger.info({ meta }, "Server is running on http://localhost:3000");
+      logger.info({ meta }, `Server is running on http://localhost:${port}`);
     });
 });

@@ -3,6 +3,9 @@
   "version": "0.12.0-beta",
   "private": true,
   "scripts": {
+    "infra:dedicated": "docker compose --env-file .env -f dev/docker-compose.yml up -d dedicated filemanager",
+    "infra:down": "docker compose --env-file .env -f dev/docker-compose.yml --profile \"*\" down",
+    "infra:logs": "docker compose --env-file .env -f dev/docker-compose.yml logs -f dedicated filemanager",
     "dev": "bun run build:templates && tsx src/server.ts | pino-pretty",
     "build": "bun run build:templates && next build --webpack",
     "start": "cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && cp -r hetzner .next/standalone/hetzner/ && node .next/standalone/server.js | pino-pretty",
