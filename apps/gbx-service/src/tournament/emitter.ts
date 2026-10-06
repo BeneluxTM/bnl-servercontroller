@@ -5,11 +5,12 @@ import type { WebhookQueue } from "./queue";
 import {
   mapEnded,
   matchEnded,
+  pickBanCompleted,
   roundEnded,
   snapshotPreEndRound,
   type PreEndRoundSnapshot,
 } from "./serialize";
-import type { WebhookEventType } from "./types";
+import type { PickBanCompletedData, WebhookEventType } from "./types";
 
 type Log = (
   level: "info" | "warn" | "error",
@@ -25,8 +26,8 @@ type Log = (
  * Handlers only enqueue (a Redis RPUSH); nothing here waits on the
  * tournament, so a hung endpoint can't slow a game callback down.
  *
- * "pickban.completed" is not sent: the match plugin that decided it now runs
- * in a sandbox and has no way to tell the bus.
+ * "pickban.completed" comes from the match plugin's own "pickBanCompleted"
+ * plugin event.
  */
 export function attachEmitter(
   runtime: Pick<ServerRuntime, "events" | "state" | "serverId">,
@@ -36,6 +37,9 @@ export function attachEmitter(
   const { serverId, state, events } = runtime;
   let pre: PreEndRoundSnapshot | null = null;
   let eliminatedThisMatch = new Set<string>();
+  // The pick/ban phase finishes before the new match has an id: hold the
+  // result and send it right after "match.started".
+  let pendingPickBan: PickBanCompletedData | null = null;
 
   const live = () => state.liveInfo;
   const isRoundBased = () => live().type !== "timeattack";
@@ -89,6 +93,15 @@ export function attachEmitter(
           name: p.name,
         })),
       });
+      if (pendingPickBan) {
+        emit("pickban.completed", pendingPickBan);
+        pendingPickBan = null;
+      }
+    }),
+
+    events.on("pluginEvent", (event) => {
+      if (event.plugin !== "match" || event.name !== "pickBanCompleted") return;
+      pendingPickBan = pickBanCompleted(event.payload);
     }),
 
     events.on("beginMap", (mapUid: string) => {

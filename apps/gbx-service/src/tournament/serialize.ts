@@ -110,24 +110,36 @@ export function matchEnded(scores: Scores): MatchEndedData {
 }
 
 /**
- * The `match` plugin's own pick/ban result — deliberately duck-typed, not
- * imported from src/plugins/match (which is server-only), so this stays a
- * pure, independently-testable mapping like the rest of this file.
+ * The `match` plugin's "pickBanCompleted" event: `picked` in match order with
+ * their position, `banned` with who banned them. The payload comes from a
+ * plugin, so anything malformed is skipped rather than trusted.
  */
 export function pickBanCompleted(
-  maps: readonly {
-    uid: string;
-    pickedBy: string;
-    bannedBy: string;
-    index: number;
-  }[],
-): PickBanCompletedData {
-  return {
-    maps: maps.map((m) => ({
-      mapUid: m.uid,
-      outcome: m.pickedBy ? "picked" : "banned",
-      by: m.pickedBy || m.bannedBy || null,
-      pickIndex: m.pickedBy ? m.index : null,
-    })),
+  payload: unknown,
+): PickBanCompletedData | null {
+  const { picked, banned } = (payload ?? {}) as {
+    picked?: unknown;
+    banned?: unknown;
   };
+  if (!Array.isArray(picked) || !Array.isArray(banned)) return null;
+  const maps: PickBanCompletedData["maps"] = [];
+  for (const m of picked) {
+    if (typeof m?.uid !== "string") continue;
+    maps.push({
+      mapUid: m.uid,
+      outcome: "picked",
+      by: typeof m.by === "string" ? m.by : null,
+      pickIndex: typeof m.position === "number" ? m.position : null,
+    });
+  }
+  for (const m of banned) {
+    if (typeof m?.uid !== "string") continue;
+    maps.push({
+      mapUid: m.uid,
+      outcome: "banned",
+      by: typeof m.by === "string" ? m.by : null,
+      pickIndex: null,
+    });
+  }
+  return { maps };
 }

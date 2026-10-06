@@ -211,6 +211,77 @@ test("match lifecycle events, and nothing without a current match", async () => 
   assert.deepEqual((queued(redis)[1].data as { index: number }).index, 0);
 });
 
+test("pick/ban completes before the match has an id; sent right after match.started", async () => {
+  const { redis, manager, flush } = await setup();
+  manager.state.currentMatchId = null; // pick/ban always finishes before this exists
+  manager.events.emit("pluginEvent", {
+    plugin: "match",
+    name: "pickBanCompleted",
+    payload: {
+      mode: "player",
+      picked: [
+        {
+          uid: "mapA",
+          name: "A",
+          filename: "A.Map.Gbx",
+          position: 1,
+          by: "Alice",
+        },
+      ],
+      banned: [{ uid: "mapB", name: "B", filename: "B.Map.Gbx", by: "Bob" }],
+    },
+  });
+  await flush();
+  assert.equal(queued(redis).length, 0, "buffered, not sent without a match");
+
+  manager.state.currentMatchId = "ext-2";
+  manager.events.emit("beginMatch", {
+    mode: "m",
+    type: "reversecup",
+    maps: ["mapA"],
+    pointsLimit: 100,
+    players: {},
+  });
+  await flush();
+  assert.deepEqual(
+    queued(redis).map((e) => e.type),
+    ["match.started", "pickban.completed"],
+  );
+  const [, pickban] = queued(redis);
+  assert.equal(pickban.externalMatchId, "ext-2");
+  assert.deepEqual(pickban.data, {
+    maps: [
+      { mapUid: "mapA", outcome: "picked", by: "Alice", pickIndex: 1 },
+      { mapUid: "mapB", outcome: "banned", by: "Bob", pickIndex: null },
+    ],
+  });
+});
+
+test("pick/ban events from other plugins or with a broken payload are ignored", async () => {
+  const { redis, manager, flush } = await setup();
+  manager.events.emit("pluginEvent", {
+    plugin: "other",
+    name: "pickBanCompleted",
+    payload: {},
+  });
+  manager.events.emit("pluginEvent", {
+    plugin: "match",
+    name: "pickBanCompleted",
+    payload: "x",
+  });
+  manager.events.emit("beginMatch", {
+    mode: "m",
+    type: "reversecup",
+    maps: [],
+    players: {},
+  });
+  await flush();
+  assert.deepEqual(
+    queued(redis).map((e) => e.type),
+    ["match.started"],
+  );
+});
+
 test("delivery: batches, retries reuse the same eventIds, then drains", async () => {
   const { redis, manager, queue, posted, flush, setResponse, advance } =
     await setup();
