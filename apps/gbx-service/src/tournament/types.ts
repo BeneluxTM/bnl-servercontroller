@@ -15,6 +15,9 @@ export type WebhookEventType =
   | "map.ended"
   | "player.eliminated"
   | "match.ended"
+  | "pickban.started"
+  | "pickban.picked"
+  | "pickban.banned"
   | "pickban.completed";
 
 export interface WebhookEnvelope<T = unknown> {
@@ -95,4 +98,28 @@ export interface PickBanMapResult {
 
 export interface PickBanCompletedData {
   maps: PickBanMapResult[];
+}
+
+export interface PickBanStartedData {
+  mode: string;
+  /** The steps in turn order; `seed` is who acts, null on a random step. */
+  order: { action: "pick" | "ban" | "random"; seed: number | null }[];
+  maps: { mapUid: string; name: string }[];
+}
+
+export interface PickBanPickedData {
+  mapUid: string;
+  name: string;
+  /** Player or team name; "random" for a random step. */
+  by: string;
+  /** 0-based play order of the picked map. */
+  pickIndex: number | null;
+  timedOut: boolean;
+}
+
+export interface PickBanBannedData {
+  mapUid: string;
+  name: string;
+  by: string;
+  timedOut: boolean;
 }

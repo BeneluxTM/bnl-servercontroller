@@ -3,7 +3,10 @@ import type {
   EventPlayerRef,
   MapEndedData,
   MatchEndedData,
+  PickBanBannedData,
   PickBanCompletedData,
+  PickBanPickedData,
+  PickBanStartedData,
   RoundEndedData,
   RoundPlayerResult,
 } from "./types";
@@ -129,7 +132,7 @@ export function pickBanCompleted(
       mapUid: m.uid,
       outcome: "picked",
       by: typeof m.by === "string" ? m.by : null,
-      pickIndex: typeof m.position === "number" ? m.position : null,
+      pickIndex: pickIndex(m.position),
     });
   }
   for (const m of banned) {
@@ -142,4 +145,68 @@ export function pickBanCompleted(
     });
   }
   return { maps };
+}
+
+// The plugin counts positions from 1, the tournament's pickIndex from 0
+function pickIndex(position: unknown): number | null {
+  return typeof position === "number" && position >= 1 ? position - 1 : null;
+}
+
+type Raw = Record<string, unknown> | null | undefined;
+
+/** The match plugin's "pickBanStarted" event. Null if the payload is malformed. */
+export function pickBanStarted(payload: unknown): PickBanStartedData | null {
+  const { mode, order, maps } = (payload ?? {}) as Raw & {
+    mode?: unknown;
+    order?: unknown;
+    maps?: unknown;
+  };
+  if (typeof mode !== "string" || !Array.isArray(order) || !Array.isArray(maps))
+    return null;
+  return {
+    mode,
+    order: order.flatMap((step: Raw) =>
+      step?.action === "pick" ||
+      step?.action === "ban" ||
+      step?.action === "random"
+        ? [
+            {
+              action: step.action,
+              seed: typeof step.seed === "number" ? step.seed : null,
+            },
+          ]
+        : [],
+    ),
+    maps: maps.flatMap((m: Raw) =>
+      typeof m?.uid === "string"
+        ? [{ mapUid: m.uid, name: String(m.name ?? "") }]
+        : [],
+    ),
+  };
+}
+
+/** "pickBanMapPicked" (picked) or "pickBanMapBanned" (banned). Null if malformed. */
+export function pickBanSelection(
+  action: "pick",
+  payload: unknown,
+): PickBanPickedData | null;
+export function pickBanSelection(
+  action: "ban",
+  payload: unknown,
+): PickBanBannedData | null;
+export function pickBanSelection(action: "pick" | "ban", payload: unknown) {
+  const { map, by, position, timedOut } = (payload ?? {}) as {
+    map?: Raw;
+    by?: unknown;
+    position?: unknown;
+    timedOut?: unknown;
+  };
+  if (typeof map?.uid !== "string" || typeof by !== "string") return null;
+  const base = {
+    mapUid: map.uid,
+    name: String(map.name ?? ""),
+    by,
+    timedOut: timedOut === true,
+  };
+  return action === "pick" ? { ...base, pickIndex: pickIndex(position) } : base;
 }

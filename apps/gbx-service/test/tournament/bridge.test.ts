@@ -251,9 +251,67 @@ test("pick/ban completes before the match has an id; sent right after match.star
   assert.equal(pickban.externalMatchId, "ext-2");
   assert.deepEqual(pickban.data, {
     maps: [
-      { mapUid: "mapA", outcome: "picked", by: "Alice", pickIndex: 1 },
+      { mapUid: "mapA", outcome: "picked", by: "Alice", pickIndex: 0 },
       { mapUid: "mapB", outcome: "banned", by: "Bob", pickIndex: null },
     ],
+  });
+});
+
+test("the live pick/ban steps become their own events as they happen", async () => {
+  const { redis, manager, flush } = await setup();
+  const plugin = (name: string, payload: unknown) =>
+    manager.events.emit("pluginEvent", { plugin: "match", name, payload });
+  const map = (uid: string) => ({
+    uid,
+    name: uid.toUpperCase(),
+    filename: `${uid}.Map.Gbx`,
+  });
+  plugin("pickBanStarted", {
+    mode: "player",
+    order: [
+      { action: "ban", seed: 1 },
+      { action: "pick", seed: 2 },
+      { action: "random" },
+    ],
+    maps: [map("mapA"), map("mapB")],
+  });
+  plugin("pickBanMapBanned", { map: map("mapA"), by: "Bob", timedOut: false });
+  plugin("pickBanMapPicked", {
+    map: map("mapB"),
+    by: "Alice",
+    position: 2,
+    timedOut: true,
+  });
+  await flush();
+  const events = queued(redis);
+  assert.deepEqual(
+    events.map((e) => e.type),
+    ["pickban.started", "pickban.banned", "pickban.picked"],
+  );
+  assert.deepEqual(events[0].data, {
+    mode: "player",
+    order: [
+      { action: "ban", seed: 1 },
+      { action: "pick", seed: 2 },
+      { action: "random", seed: null },
+    ],
+    maps: [
+      { mapUid: "mapA", name: "MAPA" },
+      { mapUid: "mapB", name: "MAPB" },
+    ],
+  });
+  assert.deepEqual(events[1].data, {
+    mapUid: "mapA",
+    name: "MAPA",
+    by: "Bob",
+    timedOut: false,
+  });
+  assert.deepEqual(events[2].data, {
+    mapUid: "mapB",
+    name: "MAPB",
+    by: "Alice",
+    pickIndex: 1,
+    timedOut: true,
   });
 });
 

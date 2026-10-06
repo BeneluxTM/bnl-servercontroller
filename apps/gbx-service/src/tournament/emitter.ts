@@ -6,6 +6,8 @@ import {
   mapEnded,
   matchEnded,
   pickBanCompleted,
+  pickBanSelection,
+  pickBanStarted,
   roundEnded,
   snapshotPreEndRound,
   type PreEndRoundSnapshot,
@@ -99,9 +101,30 @@ export function attachEmitter(
       }
     }),
 
+    // The match plugin's pick/ban phase, live. It runs before the match proper starts, so
+    // these carry the id the server has then; the result is held for the next match too.
     events.on("pluginEvent", (event) => {
-      if (event.plugin !== "match" || event.name !== "pickBanCompleted") return;
-      pendingPickBan = pickBanCompleted(event.payload);
+      if (event.plugin !== "match") return;
+      switch (event.name) {
+        case "pickBanStarted": {
+          const data = pickBanStarted(event.payload);
+          if (data) emit("pickban.started", data);
+          return;
+        }
+        case "pickBanMapPicked": {
+          const data = pickBanSelection("pick", event.payload);
+          if (data) emit("pickban.picked", data);
+          return;
+        }
+        case "pickBanMapBanned": {
+          const data = pickBanSelection("ban", event.payload);
+          if (data) emit("pickban.banned", data);
+          return;
+        }
+        case "pickBanCompleted":
+          pendingPickBan = pickBanCompleted(event.payload);
+          return;
+      }
     }),
 
     events.on("beginMap", (mapUid: string) => {
