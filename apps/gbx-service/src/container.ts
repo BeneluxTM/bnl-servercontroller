@@ -7,10 +7,14 @@ import { MarketplaceWatcher } from "./core/plugins/marketplace-watcher";
 import { PackageLoader } from "./core/plugins/sandbox/package-loader";
 import { systemClock } from "./core/ports";
 import { ServerRegistry } from "./core/server/server-registry";
-import { ServerRuntime, type RuntimeDependencies } from "./core/server/server-runtime";
 import {
-  PrismaMapRepository,
+  ServerRuntime,
+  type RuntimeDependencies,
+} from "./core/server/server-runtime";
+import { TicketVerifier } from "./http/ws/ticket-verifier";
+import {
   PrismaFirstPartyRepository,
+  PrismaMapRepository,
   PrismaMatchRepository,
   PrismaNotificationRepository,
   PrismaPlayerRepository,
@@ -21,8 +25,8 @@ import {
   PrismaServerRepository,
 } from "./infra/db/prisma-repositories";
 import { PrismaSystemCommandServices } from "./infra/db/system-command-services";
-import { EvotmGbxSession } from "./infra/gbx/evotm-session";
 import { loadFirstPartyPackages } from "./infra/first-party-packages";
+import { EvotmGbxSession } from "./infra/gbx/evotm-session";
 import { HttpsPluginClient } from "./infra/http/plugin-http-client";
 import { HttpMarketplaceIndexSource } from "./infra/marketplace/index-source";
 import { NadeoClient } from "./infra/nadeo/nadeo-client";
@@ -32,8 +36,8 @@ import { RedisRateLimiter } from "./infra/redis/rate-limiter";
 import { createRedis } from "./infra/redis/redis";
 import { loadSandboxAssets } from "./infra/sandbox-assets";
 import { loadTemplateSources } from "./infra/templates";
-import { TicketVerifier } from "./http/ws/ticket-verifier";
 import { startTournamentBridge } from "./tournament/bridge";
+import { SeedingWidgetBridge } from "./tournament/seeding-widget";
 
 // Composition root: the only place that picks concrete implementations
 export async function createContainer(config: Config) {
@@ -104,7 +108,9 @@ export async function createContainer(config: Config) {
           ),
           catalog: new PrismaPluginCatalogRepository(db),
           disable: async (install, reason) => {
-            await registry.find(install.serverId)?.disablePlugin(install.pluginId, install.name, reason);
+            await registry
+              .find(install.serverId)
+              ?.disablePlugin(install.pluginId, install.name, reason);
           },
           clock: systemClock,
           log: log.child({ module: "marketplace" }),
@@ -123,7 +129,15 @@ export async function createContainer(config: Config) {
     log,
   });
 
+  const seedingWidget = new SeedingWidgetBridge({
+    registry,
+    webhookUrl: config.TOURNAMENT_WEBHOOK_URL,
+    apiKey: config.TOURNAMENT_API_KEY,
+    log,
+  });
+
   return {
+    seedingWidget,
     log,
     registry,
     marketplace,
@@ -140,6 +154,7 @@ export async function createContainer(config: Config) {
     async close() {
       marketplace?.stop();
       tournament?.stop();
+      seedingWidget.stop();
       await registry.shutdown();
       subscriber.disconnect();
       redis.disconnect();

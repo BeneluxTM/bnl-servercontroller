@@ -6,6 +6,10 @@ import { AppError } from "../core/errors";
 import type { ServerRegistry } from "../core/server/server-registry";
 import { parse } from "../http/errors";
 import type { WebhookQueue } from "./queue";
+import {
+  seedingSnapshotSchema,
+  type SeedingWidgetBridge,
+} from "./seeding-widget";
 
 // Game events bnl-tournament's live stream gets: best-effort and lossy by design
 const FORWARDED = [
@@ -39,6 +43,7 @@ export interface TournamentRoutesOptions {
   db: DbClient;
   queue: WebhookQueue | null;
   apiKey: string;
+  seedingWidget?: SeedingWidgetBridge;
 }
 
 /**
@@ -58,6 +63,16 @@ export async function tournamentRoutes(
         "Missing or invalid tournament API key",
       );
     }
+  });
+
+  app.post("/api/tournament/servers/:serverId/seeding", async (req, reply) => {
+    const { serverId } = parse(serverParams, req.params);
+    const snapshot = parse(seedingSnapshotSchema, req.body);
+    if (snapshot.serverId !== serverId)
+      throw new AppError("BadRequest", "Snapshot server does not match route");
+    if (!opts.seedingWidget?.accept(serverId, snapshot))
+      return reply.status(404).send({ error: "Server not found" });
+    return { ok: true };
   });
 
   // Matches of one server since `?since=` (ISO, default 24 h ago)

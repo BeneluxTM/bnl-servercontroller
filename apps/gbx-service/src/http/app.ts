@@ -1,12 +1,17 @@
 import websocket from "@fastify/websocket";
-import Fastify, { LogController, type FastifyBaseLogger, type FastifyInstance } from "fastify";
 import type { DbClient } from "@gcp/db";
+import Fastify, {
+  LogController,
+  type FastifyBaseLogger,
+  type FastifyInstance,
+} from "fastify";
 import type { Logger } from "../core/logger";
 import type { ServerRegistry } from "../core/server/server-registry";
+import type { WebhookQueue } from "../tournament/queue";
+import { tournamentRoutes } from "../tournament/routes";
+import type { SeedingWidgetBridge } from "../tournament/seeding-widget";
 import { errorHandler } from "./errors";
 import { internalRoutes } from "./routes/internal";
-import { tournamentRoutes } from "../tournament/routes";
-import type { WebhookQueue } from "../tournament/queue";
 import type { TicketVerifier } from "./ws/ticket-verifier";
 import { wsRoutes } from "./ws/ws-routes";
 
@@ -18,7 +23,12 @@ export interface AppOptions {
   allowedOrigins?: string[];
   heartbeatMs?: number;
   // BNL tournament endpoints; registered only when an API key is set
-  tournament?: { apiKey: string; db: DbClient; queue: WebhookQueue | null };
+  tournament?: {
+    apiKey: string;
+    db: DbClient;
+    queue: WebhookQueue | null;
+    seedingWidget?: SeedingWidgetBridge;
+  };
 }
 
 // Builds the HTTP/WS app without listening, so tests can inject requests or bind port 0
@@ -33,14 +43,22 @@ export async function buildApp(options: AppOptions): Promise<FastifyInstance> {
   // Clients often send a JSON content type on bodyless POSTs (reconnect, disconnect, ...)
   const parseJson = app.getDefaultJsonParser("error", "error");
   app.removeContentTypeParser("application/json");
-  app.addContentTypeParser("application/json", { parseAs: "string" }, (request, body, done) => {
-    if (body === "") return done(null, undefined);
-    parseJson(request, body.toString(), done);
-  });
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (request, body, done) => {
+      if (body === "") return done(null, undefined);
+      parseJson(request, body.toString(), done);
+    },
+  );
 
   app.setErrorHandler(errorHandler);
   app.setNotFoundHandler((request, reply) =>
-    reply.status(404).send({ error: { code: "NotFound", message: `Route ${request.url} not found` } }),
+    reply
+      .status(404)
+      .send({
+        error: { code: "NotFound", message: `Route ${request.url} not found` },
+      }),
   );
 
   await app.register(websocket, { options: { maxPayload: 64 * 1024 } });
@@ -56,7 +74,10 @@ export async function buildApp(options: AppOptions): Promise<FastifyInstance> {
     serviceToken: options.serviceToken,
   });
   if (options.tournament?.apiKey) {
-    await app.register(tournamentRoutes, { registry: options.registry, ...options.tournament });
+    await app.register(tournamentRoutes, {
+      registry: options.registry,
+      ...options.tournament,
+    });
   }
   await app.register(wsRoutes, {
     registry: options.registry,

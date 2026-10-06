@@ -32,6 +32,7 @@ async function main() {
       apiKey: config.TOURNAMENT_API_KEY,
       db: container.db,
       queue: container.tournamentQueue,
+      seedingWidget: container.seedingWidget,
     },
   });
 
@@ -50,7 +51,9 @@ async function main() {
     await Promise.race([
       container.marketplace
         .check()
-        .catch((error) => log.warn({ err: error }, "Could not check the plugin marketplace")),
+        .catch((error) =>
+          log.warn({ err: error }, "Could not check the plugin marketplace"),
+        ),
       new Promise((resolve) => setTimeout(resolve, 5000)),
     ]);
   }
